@@ -1,0 +1,15 @@
+[package]
+name = "charity_donation"
+version = "1.0.0"
+authors = []
+
+[addresses]
+charity_donation = "0xe7851de0226c2ec677184a2a7359382e439176ffc45236aca218cabc38a199e9"
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-framework.git"
+rev = "mainnet"
+subdir = "aptos-framework"
+
+[dev-dependencies]
