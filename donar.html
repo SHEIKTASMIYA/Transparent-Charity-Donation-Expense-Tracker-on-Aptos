@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Charity Demo - Enhanced Donor Wallet</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petra Wallet Donation Tracker</title>
     <style>
         * {
             margin: 0;
@@ -15,147 +15,261 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
         }
 
         .header {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 30px;
             text-align: center;
+            margin-bottom: 2rem;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
         }
 
         .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            color: #666;
+            font-size: 1.1rem;
         }
 
-        .content {
-            padding: 40px;
-        }
-
-        .section {
-            margin-bottom: 40px;
-            padding: 30px;
-            border-radius: 15px;
+        .wallet-info {
             background: #f8f9fa;
-            border-left: 5px solid #4CAF50;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
         }
 
-        .section h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.8em;
+        .wallet-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .wallet-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .charity-spending {
+            background: #e8f5e8;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #28a745;
+        }
+
+        .charity-spending h3 {
+            color: #155724;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .spending-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .spending-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #d4edda;
+        }
+
+        .spending-amount {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 0.5rem;
+        }
+
+        .spending-category {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .spending-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .spending-item {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #d4edda;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .spending-details {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .spending-title {
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 0.2rem;
+        }
+
+        .spending-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.2rem;
+        }
+
+        .spending-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .spending-cost {
+            font-weight: bold;
+            color: #dc3545;
+            font-size: 1.1rem;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
-        label {
+        .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
         }
 
-        input, textarea {
+        .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e8ed;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
             transition: border-color 0.3s ease;
         }
 
-        input:focus, textarea:focus {
+        .form-group input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #667eea;
         }
 
         .btn {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 15px 30px;
+            width: 100%;
+            padding: 1rem 2rem;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 1.1rem;
             font-weight: 600;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            margin-right: 10px;
-            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
         }
 
-        .btn:hover {
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
 
-        .btn:disabled {
-            background: #cccccc;
+        .btn-primary:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
         }
 
-        .btn.donate {
-            background: linear-gradient(135deg, #FF6B6B 0%, #EE5A52 100%);
-            font-size: 18px;
-            padding: 18px 36px;
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
         }
 
-        .btn.donate:hover {
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
         }
 
         .status {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 10px;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 500;
         }
 
-        .status.connected {
+        .status.success {
             background: #d4edda;
             color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        .status.disconnected {
+        .status.error {
             background: #f8d7da;
             color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .hidden {
+            display: none;
         }
 
         .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4CAF50;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+            margin-right: 10px;
         }
 
         @keyframes spin {
@@ -163,1031 +277,1236 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border: 1px solid #f5c6cb;
+        .charity-info {
+            background: #e8f5e8;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #28a745;
         }
 
-        .success {
-            background: #d4edda;
+        .charity-info h3 {
             color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border: 1px solid #c3e6cb;
+            margin-bottom: 0.5rem;
         }
 
-        .donation-status {
-            margin-top: 20px;
-            padding: 15px;
+        .refresh-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
             border-radius: 8px;
-            display: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
-        .donation-status.success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
+        .refresh-btn:hover {
+            background: #218838;
+        }
+
+        .transaction-history {
+            background: #fff9e6;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #ffc107;
+        }
+
+        .transaction-history h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .total-donated {
+            font-size: 1.2rem;
+            font-weight: bold;
             color: #155724;
-        }
-
-        .donation-status.error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-
-        .info-banner {
-            background: linear-gradient(135deg, #17a2b8, #138496);
-            color: white;
-            padding: 15px;
+            background: #d4edda;
+            padding: 0.5rem 1rem;
             border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .amount-input {
-            font-size: 18px;
-            padding: 15px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        /* New styles for transaction tracking */
-        .summary-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .stat-card h3 {
-            font-size: 2em;
-            margin-bottom: 5px;
-        }
-
-        .stat-card p {
-            opacity: 0.9;
-            font-size: 14px;
         }
 
         .transaction-list {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin: 20px 0;
-        }
-
-        .transaction-header {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            padding: 20px;
-            border-radius: 12px 12px 0 0;
-            border-bottom: 1px solid #e1e8ed;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .transaction-header h3 {
-            color: #2c3e50;
-            margin: 0;
+            max-height: 300px;
+            overflow-y: auto;
         }
 
         .transaction-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background-color 0.2s ease;
-        }
-
-        .transaction-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .transaction-item:last-child {
-            border-bottom: none;
-        }
-
-        .tx-row {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .tx-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .tx-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .tx-icon.donation {
-            background: #ffebee;
-            color: #e91e63;
-        }
-
-        .tx-icon.charity {
-            background: #e8f5e8;
-            color: #4CAF50;
-        }
-
-        .tx-details {
-            flex: 1;
-        }
-
-        .tx-amount {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .tx-amount.positive {
-            color: #4CAF50;
-        }
-
-        .tx-amount.negative {
-            color: #e91e63;
-        }
-
-        .tx-meta {
-            font-size: 12px;
-            color: #666;
-            margin-top: 2px;
-        }
-
-        .tx-address {
-            font-family: monospace;
-            font-size: 11px;
-            color: #888;
-        }
-
-        .tx-timestamp {
-            font-size: 12px;
-            color: #888;
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .filter-tab {
-            padding: 8px 16px;
-            border: 2px solid #e1e8ed;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-
-        .filter-tab:hover {
-            border-color: #4CAF50;
-        }
-
-        .filter-tab.active {
-            background: #4CAF50;
-            color: white;
-            border-color: #4CAF50;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-        }
-
-        .empty-state h4 {
-            margin-bottom: 10px;
-            color: #888;
-        }
-
-        .tracking-section {
-            border-left-color: #e91e63;
-        }
-
-        .tracking-section h2 {
-            color: #e91e63;
-        }
-
-        .explorer-link {
-            display: inline-block;
-            background: #007bff;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-        .explorer-link:hover {
-            background: #0056b3;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .transaction-details {
-            background: #e8f5e8;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            border: 2px solid #4CAF50;
+            flex: 1;
+            min-width: 200px;
         }
 
-        .transaction-details.success {
+        .transaction-amount {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 1.1rem;
+        }
+
+        .transaction-address {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #666;
+            margin: 0.2rem 0;
+        }
+
+        .transaction-time {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .transaction-hash {
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .transaction-hash:hover {
+            color: #0056b3;
+        }
+
+        .no-transactions {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        .clear-history-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .clear-history-btn:hover {
+            background: #c82333;
+        }
+
+        .history-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .network-info {
+            background: #fff3cd;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ffc107;
+            font-size: 0.9rem;
+        }
+
+        .impact-metrics {
+            background: #f0f8ff;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #007bff;
+        }
+
+        .impact-metrics h3 {
+            color: #004085;
+            margin-bottom: 1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #b8daff;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 0.3rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .persistent-notice {
             background: #d4edda;
-            border-color: #28a745;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
         }
 
-        .transaction-details h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
+        .export-import-controls {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .wallet-detail {
-            margin-bottom: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
+        .export-btn, .import-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .wallet-detail:last-child {
-            border-bottom: none;
+        .export-btn:hover, .import-btn:hover {
+            background: #0056b3;
         }
 
-        .wallet-detail strong {
-            color: #2c3e50;
+        .import-file {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .spending-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .transaction-history h3 {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .history-controls {
+                justify-content: space-between;
+            }
+
+            .export-import-controls {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💝 Charity Donation Demo</h1>
-            <p>Enhanced Donor Wallet with Transaction Tracking</p>
+            <h1>🎯 Charity Impact Tracker</h1>
+            <p>Track how your donations create real change</p>
         </div>
 
-        <div class="content">
-            <div class="info-banner">
-                <strong>ℹ Enhanced Tracking System:</strong> Monitor your donations and see how the charity spends funds in real-time!
-            </div>
-
-            <div class="section">
-                <h2>🔗 Wallet Connection</h2>
-                <div id="connectionStatus" class="status disconnected">Not Connected</div>
-                <div id="networkStatus" style="margin-top: 10px; padding: 8px; border-radius: 5px; background: #f8f9fa; font-size: 14px;">
-                    <strong>Network:</strong> <span id="currentNetwork">Unknown</span>
-                </div>
-                <button id="connectBtn" class="btn">Connect Petra Wallet</button>
-                <div id="walletAddress" style="margin-top: 10px; font-family: monospace;"></div>
-            </div>
-
-            <div class="section">
-                <h2>🎯 Setup Donation</h2>
-                <div class="form-group">
-                    <label for="charityAddressInput">Charity Wallet Address:</label>
-                    <input type="text" id="charityAddressInput" placeholder="0x..." />
-                    <small style="color: #666;">This is where your donation will be sent</small>
-                </div>
-                <div class="form-group">
-                    <label for="supplierAddressInput">Resource Supplier Address (Optional):</label>
-                    <input type="text" id="supplierAddressInput" placeholder="0x..." />
-                    <small style="color: #666;">For tracking purposes only</small>
-                </div>
-                <button id="updateAddresses" class="btn">📝 Update Addresses</button>
-            </div>
-
-            <div class="section">
-                <h2>💝 Make Donation</h2>
-                <div class="form-group">
-                    <label for="donationAmount">Donation Amount (APT):</label>
-                    <input type="number" id="donationAmount" class="amount-input" step="0.01" min="0.01" placeholder="1.0" />
-                </div>
-                <div class="form-group">
-                    <label for="donationMessage">Donation Message (Optional):</label>
-                    <textarea id="donationMessage" rows="3" placeholder="Your message to the charity..."></textarea>
-                </div>
-                <button id="donateBtn" class="btn donate">💝 Send Donation</button>
-                
-                <div id="donationStatus" class="donation-status"></div>
-            </div>
-
-            <!-- Donation Tracking Section -->
-            <div class="section tracking-section">
-                <h2>📊 My Donation Impact</h2>
-                
-                <div class="summary-stats">
-                    <div class="stat-card">
-                        <h3 id="totalDonated">0</h3>
-                        <p>Total APT Donated</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="donationCount">0</h3>
-                        <p>Donations Made</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="charitySpent">0</h3>
-                        <p>APT Spent by Charity</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="charityBalance">0</h3>
-                        <p>Charity Available</p>
-                    </div>
-                </div>
-
-                <div class="filter-tabs">
-                    <div class="filter-tab active" data-filter="all">All Transactions</div>
-                    <div class="filter-tab" data-filter="donations">My Donations</div>
-                    <div class="filter-tab" data-filter="charity">Charity Spending</div>
-                </div>
-
-                <div class="transaction-list">
-                    <div class="transaction-header">
-                        <h3>Transaction History</h3>
-                        <button id="refreshTransactions" class="btn" style="padding: 8px 16px; font-size: 14px;">🔄 Refresh</button>
-                    </div>
-                    <div id="transactionsList">
-                        <div class="empty-state">
-                            <h4>No transactions found</h4>
-                            <p>Connect your wallet and set charity address to view transaction history</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="loadingSection" class="loading">
-                <div class="spinner"></div>
-                <p>Processing transaction...</p>
-            </div>
-
-            <div id="transactionResult" class="transaction-details" style="display: none;">
-                <h3>📊 Transaction Details</h3>
-                <div id="transactionInfo"></div>
-            </div>
-
-            <div id="messages"></div>
+        <div class="persistent-notice">
+            💾 <strong>Persistent Storage:</strong> Your donation history is now saved permanently in your browser and will persist across sessions!
         </div>
+
+        <div id="connectSection">
+            <div class="network-info">
+                ⚠️ <strong>Important:</strong> This app uses Aptos Testnet. Make sure your Petra wallet is set to Testnet and you have testnet APT tokens.
+                <br><small>Get free testnet APT from: <a href="https://aptoslabs.com/testnet-faucet" target="_blank">https://aptoslabs.com/testnet-faucet</a></small>
+            </div>
+            <button class="btn btn-primary" onclick="connectWallet()">
+                Connect Petra Wallet
+            </button>
+        </div>
+
+        <div id="walletSection" class="hidden">
+            <div class="wallet-info">
+                <div class="wallet-display">
+                    <div>
+                        <div class="wallet-status">✅ Wallet Connected</div>
+                        <div>Ready to make impact</div>
+                    </div>
+                </div>
+                <div class="wallet-address">
+                    <strong>Your Address:</strong> <span id="walletAddress">Not connected</span>
+                </div>
+            </div>
+
+            <div class="impact-metrics">
+                <h3>📊 Your Impact So Far</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalDonationsMetric">0</div>
+                        <div class="metric-label">Total Donations</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalAmountMetric">0 APT</div>
+                        <div class="metric-label">Amount Donated</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="livesImpactedMetric">0</div>
+                        <div class="metric-label">Lives Impacted</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="projectsFundedMetric">0</div>
+                        <div class="metric-label">Projects Funded</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charity-spending">
+                <h3>
+                    💰 How Your Donations Are Being Used
+                    <div>
+                        <button class="refresh-btn" onclick="refreshSpendingData()" title="Refresh spending data">
+                            🔄 Update
+                        </button>
+                    </div>
+                </h3>
+                
+                <div class="spending-summary">
+                    <div class="spending-card">
+                        <div class="spending-amount" id="medicalSpending">45.2 APT</div>
+                        <div class="spending-category">Medical Aid</div>
+                    </div>
+                    <div class="spending-card">
+                        <div class="spending-amount" id="educationSpending">32.8 APT</div>
+                        <div class="spending-category">Education</div>
+                    </div>
+                    <div class="spending-card">
+                        <div class="spending-amount" id="foodSpending">28.5 APT</div>
+                        <div class="spending-category">Food Security</div>
+                    </div>
+                    <div class="spending-card">
+                        <div class="spending-amount" id="housingSpending">19.3 APT</div>
+                        <div class="spending-category">Housing</div>
+                    </div>
+                </div>
+
+                <div class="spending-list" id="spendingList">
+                   <!-- Spending items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="charity-info">
+                <h3>🏥 Charity Information</h3>
+                <p><strong>Children's Hope Foundation</strong></p>
+                <p class="wallet-address">0xd42f5bc06353ac78ccebb345c10bf623b564ad4a9ff8c7fef58447e425f63763</p>
+                <p><small><em>⚠️ Replace with real charity address before sending</em></small></p>
+            </div>
+
+            <div class="transaction-history">
+                <h3>
+                    📊 Your Donation History
+                    <div class="history-controls">
+                        <span class="total-donated" id="totalDonated">Total: 0 APT</span>
+                        <button class="clear-history-btn" onclick="clearHistory()" title="Clear donation history">
+                            🗑️ Clear
+                        </button>
+                    </div>
+                </h3>
+
+                <div class="export-import-controls">
+                    <button class="export-btn" onclick="exportHistory()" title="Export donation history">
+                        📁 Export History
+                    </button>
+                    <button class="import-btn" onclick="document.getElementById('importFile').click()" title="Import donation history">
+                        📂 Import History
+                    </button>
+                    <input type="file" id="importFile" class="import-file" accept=".json" onchange="importHistory(event)">
+                </div>
+
+                <div class="transaction-list" id="transactionList">
+                    <div class="no-transactions">
+                        No donations made yet. Your charity donations will appear here.
+                    </div>
+                </div>
+            </div>
+
+            <form id="donationForm">
+                <div class="form-group">
+                    <label for="recipientAddress">Charity Wallet Address</label>
+                    <input 
+                        type="text" 
+                        id="recipientAddress" 
+                        placeholder="0x..." 
+                        value="0xd42f5bc06353ac78ccebb345c10bf623b564ad4a9ff8c7fef58447e425f63763"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount (APT)</label>
+                    <input 
+                        type="number" 
+                        id="amount" 
+                        placeholder="0.01" 
+                        min="0.001" 
+                        step="0.001" 
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="sendBtn">
+                    Send Donation
+                </button>
+            </form>
+
+            <button class="btn btn-secondary" onclick="disconnectWallet()">
+                Disconnect Wallet
+            </button>
+        </div>
+
+        <div id="status"></div>
     </div>
 
     <script>
-        // ====== Config ======
-        const NETWORK = 'testnet';
-        const FULLNODE = `https://fullnode.${NETWORK}.aptoslabs.com/v1`;
-        const EXPLORER = `https://explorer.aptoslabs.com`;
-
-        let account = null;
-        let charityAddr = '';
-        let supplierAddr = '';
-
-        // Cache for balances
-        const balanceCache = new Map();
-        const CACHE_DURATION = 5000;
-
-        // Transaction tracking
-        let transactionHistory = [];
-        let currentFilter = 'all';
-
-        // ====== Helper Functions ======
-        function isValidAddress(address) {
-            if (!address || typeof address !== 'string') return false;
-            const cleanAddr = address.startsWith('0x') ? address.slice(2) : address;
-            return /^[a-fA-F0-9]{1,64}$/.test(cleanAddr);
-        }
-
-        function normalizeAddress(address) {
-            if (!address) return address;
-            if (!address.startsWith('0x')) {
-                address = '0x' + address;
-            }
-            return address.toLowerCase();
-        }
-
-        function truncateAddress(address) {
-            if (!address || address.length < 12) return address;
-            return `${address.slice(0, 8)}...${address.slice(-6)}`;
-        }
-
-        function octasToAPT(octas) {
-            return Number(octas || 0) / 1e8;
-        }
-
-        function aptToOctas(apt) {
-            return Math.floor(Number(apt) * 1e8);
-        }
-
-        function showLoading(show) {
-            document.getElementById('loadingSection').style.display = show ? 'block' : 'none';
-        }
-
-        function showMessage(message, type) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type;
-            messageDiv.textContent = message;
-            messagesDiv.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 5000);
-        }
-
-        function showDonationStatus(message, type) {
-            const statusDiv = document.getElementById('donationStatus');
-            statusDiv.textContent = message;
-            statusDiv.className = `donation-status ${type}`;
-            statusDiv.style.display = 'block';
-            if (type === 'success') {
-                setTimeout(() => (statusDiv.style.display = 'none'), 10000);
-            }
-        }
-
-        function setConnectionUI(connected) {
-            const statusEl = document.getElementById('connectionStatus');
-            if (connected) {
-                statusEl.textContent = 'Connected';
-                statusEl.className = 'status connected';
-            } else {
-                statusEl.textContent = 'Not Connected';
-                statusEl.className = 'status disconnected';
-            }
-        }
-
-        // ====== Balance Functions ======
-        async function getBalance(address) {
-            if (!address || !isValidAddress(address)) {
-                return 0;
-            }
-
-            const normalizedAddr = normalizeAddress(address);
-            const cacheKey = normalizedAddr;
-            const cached = balanceCache.get(cacheKey);
-            
-            if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
-                return cached.balance;
-            }
-
-            const endpoints = [
-                `https://fullnode.testnet.aptoslabs.com/v1`,
-                `https://fullnode.mainnet.aptoslabs.com/v1`,
-                `https://fullnode.devnet.aptoslabs.com/v1`
-            ];
-
-            for (const endpoint of endpoints) {
-                try {
-                    const accountUrl = `${endpoint}/accounts/${normalizedAddr}`;
-                    const accountResponse = await fetch(accountUrl);
-
-                    if (accountResponse.ok) {
-                        const coinStoreUrl = `${endpoint}/accounts/${normalizedAddr}/resource/0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>`;
-                        const coinStoreResponse = await fetch(coinStoreUrl);
-                        
-                        if (coinStoreResponse.ok) {
-                            const coinStore = await coinStoreResponse.json();
-                            const value = coinStore?.data?.coin?.value;
-                            
-                            if (value !== undefined && value !== null) {
-                                const aptBalance = octasToAPT(value);
-                                balanceCache.set(cacheKey, {
-                                    balance: aptBalance,
-                                    timestamp: Date.now()
-                                });
-                                return aptBalance;
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.log('Error checking balance:', error.message);
-                }
-            }
-
-            balanceCache.set(cacheKey, {
-                balance: 0,
-                timestamp: Date.now()
-            });
-            return 0;
-        }
-
-        // ====== Transaction Functions ======
-        async function getTransactionByHash(hash) {
-            const url = `${FULLNODE}/transactions/by_hash/${hash}`;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error('Failed to fetch transaction');
-            return res.json();
-        }
-
-        async function waitForTransaction(hash, timeoutMs = 30000) {
-            const start = Date.now();
-            while (Date.now() - start < timeoutMs) {
-                try {
-                    const tx = await getTransactionByHash(hash);
-                    if (tx && (tx.success === true || tx.success === false)) return tx;
-                } catch (_) {}
-                await new Promise((r) => setTimeout(r, 1500));
-            }
-            throw new Error('Timeout waiting for transaction confirmation');
-        }
-
-        async function fetchAccountTransactions(address, limit = 25) {
-            if (!address || !isValidAddress(address)) {
-                return [];
-            }
-
-            const normalizedAddr = normalizeAddress(address);
-            const endpoints = [
-                `https://fullnode.testnet.aptoslabs.com/v1`,
-                `https://fullnode.mainnet.aptoslabs.com/v1`,
-                `https://fullnode.devnet.aptoslabs.com/v1`
-            ];
-
-            for (const endpoint of endpoints) {
-                try {
-                    const url = `${endpoint}/accounts/${normalizedAddr}/transactions?limit=${limit}`;
-                    const response = await fetch(url);
-                    
-                    if (response.ok) {
-                        const transactions = await response.json();
-                        return transactions.filter(tx => tx.type === 'user_transaction');
-                    }
-                } catch (error) {
-                    console.log('Error fetching transactions:', error.message);
-                }
-            }
-            return [];
-        }
-
-        async function loadTransactionHistory() {
-            if (!account?.address) {
-                updateTransactionStats([], []);
-                renderTransactions([]);
-                return;
-            }
-
+        let currentAccount = null;
+        let donationHistory = [];
+        let charitySpendingData = [];
+        let charityWalletSpending = {};
+        const STORAGE_PREFIX = 'charity_donation_';
+        const CHARITY_SPENDING_PREFIX = 'charity_spending_';
+        const GLOBAL_STATS_KEY = 'charity_global_stats';
+        const spendingCategories = {
+            medical: [
+                { title: "Medical Supplies Purchase", description: "Emergency medical kits for rural villages" },
+                { title: "Vaccination Campaign", description: "Community health immunization drive" },
+                { title: "Medicine Distribution", description: "Essential medicines for chronic patients" },
+                { title: "Health Checkup Program", description: "Free health screening for elderly" }
+            ],
+            education: [
+                { title: "School Construction Materials", description: "Building materials for new classroom" },
+                { title: "Teacher Training Program", description: "Professional development for local educators" },
+                { title: "Educational Supplies", description: "Books, notebooks, and stationery for students" },
+                { title: "Computer Lab Setup", description: "Digital literacy program equipment" }
+            ],
+            food: [
+                { title: "Food Distribution Program", description: "Monthly food packages for families" },
+                { title: "Community Kitchen", description: "Daily meals for homeless individuals" },
+                { title: "Child Nutrition Program", description: "Nutritious meals for school children" },
+                { title: "Emergency Food Relief", description: "Food assistance during crisis" }
+            ],
+            housing: [
+                { title: "Emergency Shelter Setup", description: "Temporary housing for displaced families" },
+                { title: "Home Renovation", description: "Repair work for damaged homes" },
+                { title: "Housing Materials", description: "Construction supplies for new homes" },
+                { title: "Shelter Maintenance", description: "Upkeep of community shelters" }
+            ]
+        };
+        const APTOS_NODE_URL = 'https://fullnode.testnet.aptoslabs.com/v1';
+        function setLocalStorage(key, value) {
             try {
-                showMessage('Loading transaction history...', 'success');
-                
-                const donorTxs = await fetchAccountTransactions(account.address, 50);
-                let charityTxs = [];
-                
-                if (charityAddr && isValidAddress(charityAddr)) {
-                    charityTxs = await fetchAccountTransactions(charityAddr, 50);
-                }
-
-                const processedTxs = await processTransactions(donorTxs, charityTxs);
-                transactionHistory = processedTxs;
-
-                updateTransactionStats(donorTxs, charityTxs);
-                renderTransactions(transactionHistory);
-                
-                showMessage('Transaction history updated!', 'success');
-                
+                const serializedValue = JSON.stringify(value);
+                localStorage.setItem(key, serializedValue);
+                console.log(`Saved to localStorage: ${key}`);
+                return true;
             } catch (error) {
-                console.error('Error loading transaction history:', error);
-                showMessage('Error loading transaction history: ' + error.message, 'error');
+                console.error('Failed to save to localStorage:', error);
+                showStatus('Warning: Unable to save data permanently. Changes may be lost on page refresh.', 'error');
+                return false;
             }
         }
 
-        async function processTransactions(donorTxs, charityTxs) {
-            const processed = [];
-            const donorAddr = normalizeAddress(account.address);
-            const charityAddress = normalizeAddress(charityAddr);
-            
-            // Process donor transactions (donations to charity)
-            for (const tx of donorTxs) {
-                if (tx.payload?.function === '0x1::aptos_account::transfer' && tx.success) {
-                    const recipient = normalizeAddress(tx.payload.arguments[0]);
-                    const amount = octasToAPT(tx.payload.arguments[1]);
-                    
-                    if (recipient === charityAddress) {
-                        processed.push({
-                            hash: tx.hash,
-                            type: 'donation',
-                            from: donorAddr,
-                            to: recipient,
-                            amount: amount,
-                            timestamp: Math.floor(Number(tx.timestamp) / 1000),
-                            success: tx.success,
-                            gas_used: tx.gas_used
-                        });
-                    }
-                }
-            }
-
-            // Process charity transactions (spending)
-            for (const tx of charityTxs) {
-                if (tx.payload?.function === '0x1::aptos_account::transfer' && tx.success) {
-                    const recipient = normalizeAddress(tx.payload.arguments[0]);
-                    const amount = octasToAPT(tx.payload.arguments[1]);
-                    
-                    if (recipient !== donorAddr) {
-                        processed.push({
-                            hash: tx.hash,
-                            type: 'charity_spending',
-                            from: charityAddress,
-                            to: recipient,
-                            amount: amount,
-                            timestamp: Math.floor(Number(tx.timestamp) / 1000),
-                            success: tx.success,
-                            gas_used: tx.gas_used
-                        });
-                    }
-                }
-            }
-
-            return processed.sort((a, b) => b.timestamp - a.timestamp);
-        }
-
-        function updateTransactionStats(donorTxs, charityTxs) {
-            const donorAddr = normalizeAddress(account?.address || '');
-            const charityAddress = normalizeAddress(charityAddr || '');
-            
-            let totalDonated = 0;
-            let donationCount = 0;
-            let charitySpent = 0;
-
-            // Calculate donations
-            for (const tx of donorTxs) {
-                if (tx.payload?.function === '0x1::aptos_account::transfer' && tx.success) {
-                    const recipient = normalizeAddress(tx.payload.arguments[0]);
-                    if (recipient === charityAddress) {
-                        totalDonated += octasToAPT(tx.payload.arguments[1]);
-                        donationCount++;
-                    }
-                }
-            }
-
-            // Calculate charity spending
-            for (const tx of charityTxs) {
-                if (tx.payload?.function === '0x1::aptos_account::transfer' && tx.success) {
-                    const recipient = normalizeAddress(tx.payload.arguments[0]);
-                    if (recipient !== donorAddr) {
-                        charitySpent += octasToAPT(tx.payload.arguments[1]);
-                    }
-                }
-            }
-
-            document.getElementById('totalDonated').textContent = totalDonated.toFixed(4);
-            document.getElementById('donationCount').textContent = donationCount;
-            document.getElementById('charitySpent').textContent = charitySpent.toFixed(4);
-            
-            if (charityAddr) {
-                getBalance(charityAddr).then(balance => {
-                    document.getElementById('charityBalance').textContent = balance.toFixed(4);
-                });
-            }
-        }
-
-        function renderTransactions(transactions) {
-            const container = document.getElementById('transactionsList');
-            
-            let filteredTxs = transactions;
-            if (currentFilter === 'donations') {
-                filteredTxs = transactions.filter(tx => tx.type === 'donation');
-            } else if (currentFilter === 'charity') {
-                filteredTxs = transactions.filter(tx => tx.type === 'charity_spending');
-            }
-
-            if (filteredTxs.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <h4>No ${currentFilter === 'all' ? '' : currentFilter + ' '}transactions found</h4>
-                        <p>${getEmptyStateMessage()}</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            for (const tx of filteredTxs) {
-                const icon = tx.type === 'donation' ? '💝' : '💸';
-                const iconClass = tx.type === 'donation' ? 'donation' : 'charity';
-                const description = tx.type === 'donation' ? 'Donation to Charity' : 'Charity Spending';
-                
-                html += `
-                    <div class="transaction-item">
-                        <div class="tx-row">
-                            <div class="tx-info">
-                                <div class="tx-icon ${iconClass}">${icon}</div>
-                                <div class="tx-details">
-                                    <div class="tx-amount negative">-${tx.amount.toFixed(4)} APT</div>
-                                    <div class="tx-meta">${description}</div>
-                                    <div class="tx-address">To: ${truncateAddress(tx.to)}</div>
-                                </div>
-                            </div>
-                            <div class="tx-timestamp">
-                                ${new Date(tx.timestamp * 1000).toLocaleDateString()}
-                            </div>
-                        </div>
-                        <div style="margin-top: 8px; font-size: 12px; color: #666;">
-                            <span>Hash: ${truncateAddress(tx.hash)}</span>
-                            <a href="${EXPLORER}/txn/${tx.hash}?network=${NETWORK}" target="_blank" style="margin-left: 10px; color: #007bff;">View</a>
-                        </div>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = html;
-        }
-
-        function getEmptyStateMessage() {
-            if (currentFilter === 'donations') {
-                return 'Make your first donation to see it here';
-            } else if (currentFilter === 'charity') {
-                return 'No charity spending transactions found';
-            } else {
-                return 'Connect wallet and set charity address to view transactions';
-            }
-        }
-
-        // ====== UI Actions ======
-        function updateAddresses() {
-            const newCharityAddr = document.getElementById('charityAddressInput').value.trim();
-            const newSupplierAddr = document.getElementById('supplierAddressInput').value.trim();
-
-            let updated = false;
-
-            if (newCharityAddr) {
-                if (isValidAddress(newCharityAddr)) {
-                    charityAddr = normalizeAddress(newCharityAddr);
-                    updated = true;
-                } else {
-                    showMessage('Invalid charity address format. Please check and try again.', 'error');
-                    return;
-                }
-            }
-
-            if (newSupplierAddr) {
-                if (isValidAddress(newSupplierAddr)) {
-                    supplierAddr = normalizeAddress(newSupplierAddr);
-                    updated = true;
-                } else {
-                    showMessage('Invalid supplier address format. Please check and try again.', 'error');
-                    return;
-                }
-            }
-
-            if (updated) {
-                showMessage('Addresses updated successfully!', 'success');
-                balanceCache.clear();
-                loadTransactionHistory();
-            } else {
-                showMessage('Please enter at least one valid address.', 'error');
-            }
-        }
-
-        function displayTransactionDetails(txn, type, amount, message) {
-            const resultDiv = document.getElementById('transactionResult');
-            const infoDiv = document.getElementById('transactionInfo');
-
-            const tsMicros = Number(txn.timestamp || 0);
-            const tsMs = Math.floor(tsMicros / 1000);
-
-            let html = `
-                <div class="wallet-detail"><strong>Transaction Hash:</strong> ${txn.hash}</div>
-                <div class="wallet-detail"><strong>Type:</strong> ${type.charAt(0).toUpperCase() + type.slice(1)}</div>
-                <div class="wallet-detail"><strong>From:</strong> ${truncateAddress(txn.sender)}</div>
-                <div class="wallet-detail"><strong>To:</strong> ${truncateAddress(charityAddr)}</div>
-                <div class="wallet-detail"><strong>Status:</strong> <span style="color: ${txn.success ? 'green' : 'red'};">${txn.success ? '✅ Success' : '❌ Failed'}</span></div>
-                <div class="wallet-detail"><strong>Gas Used:</strong> ${txn.gas_used || 'N/A'}</div>
-                <div class="wallet-detail"><strong>Timestamp:</strong> ${new Date(tsMs).toLocaleString()}</div>
-            `;
-
-            if (amount) {
-                html += `<div class="wallet-detail"><strong>Amount:</strong> ${amount} APT</div>`;
-            }
-            if (message) {
-                html += `<div class="wallet-detail"><strong>Message:</strong> ${message}</div>`;
-            }
-
-            html += `
-                <a href="${EXPLORER}/txn/${txn.hash}?network=${NETWORK}" target="_blank" class="explorer-link">View on Aptos Explorer</a>
-            `;
-
-            infoDiv.innerHTML = html;
-            resultDiv.className = `transaction-details ${txn.success ? 'success' : ''}`;
-            resultDiv.style.display = 'block';
-
-            setTimeout(() => {
-                resultDiv.style.display = 'none';
-            }, 15000);
-        }
-
-        async function sendDonation() {
-            const statusDiv = document.getElementById('donationStatus');
-            statusDiv.style.display = 'none';
-
-            if (!account) {
-                showDonationStatus('Please connect your wallet first.', 'error');
-                return;
-            }
-
-            if (!charityAddr || !isValidAddress(charityAddr)) {
-                showDonationStatus('Please set a valid charity address first.', 'error');
-                return;
-            }
-
-            const amount = parseFloat(document.getElementById('donationAmount').value);
-            const message = document.getElementById('donationMessage').value.trim();
-
-            if (!amount || amount <= 0) {
-                showDonationStatus('Please enter a valid donation amount.', 'error');
-                return;
-            }
-            if (amount < 0.01) {
-                showDonationStatus('Minimum donation amount is 0.01 APT.', 'error');
-                return;
-            }
-
-            // Check balance
-            balanceCache.delete(normalizeAddress(account.address));
-            const donorBalance = await getBalance(account.address);
-            
-            if (donorBalance < amount) {
-                showDonationStatus(
-                    `Insufficient funds. Available: ${donorBalance.toFixed(4)} APT, Required: ${amount} APT`,
-                    'error'
-                );
-                return;
-            }
-
-            showLoading(true);
-            document.getElementById('donateBtn').disabled = true;
-
+        function getLocalStorage(key, defaultValue = null) {
             try {
-                const amountOctas = aptToOctas(amount);
-                const normalizedCharityAddr = normalizeAddress(charityAddr);
-
-                const payload = {
-                    type: 'entry_function_payload',
-                    function: '0x1::aptos_account::transfer',
-                    type_arguments: [],
-                    arguments: [normalizedCharityAddr, String(amountOctas)]
-                };
-
-                const tx = await window.aptos.signAndSubmitTransaction(payload);
-                showDonationStatus(`Transaction submitted: ${tx.hash}. Waiting for confirmation...`, 'success');
-
-                const confirmed = await waitForTransaction(tx.hash);
-
-                if (confirmed.success) {
-                    displayTransactionDetails(confirmed, 'donation', amount, message);
-
-                    balanceCache.clear();
-                    await loadTransactionHistory();
-
-                    document.getElementById('donationAmount').value = '';
-                    document.getElementById('donationMessage').value = '';
-
-                    showDonationStatus(`✅ Donation of ${amount} APT sent successfully to charity!`, 'success');
-                    showMessage(`Donation successful! Transaction: ${tx.hash}`, 'success');
-                } else {
-                    throw new Error('Transaction failed: ' + (confirmed.vm_status || 'Unknown error'));
+                const item = localStorage.getItem(key);
+                if (item === null) {
+                    return defaultValue;
                 }
+                return JSON.parse(item);
             } catch (error) {
-                console.error('Donation error:', error);
-                showDonationStatus('❌ Donation failed: ' + error.message, 'error');
-                showMessage('Donation failed: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-                document.getElementById('donateBtn').disabled = false;
+                console.error('Failed to retrieve from localStorage:', error);
+                return defaultValue;
             }
         }
 
-        // ====== Wallet Connection ======
+        function removeLocalStorage(key) {
+            try {
+                localStorage.removeItem(key);
+                console.log(`Removed from localStorage: ${key}`);
+                return true;
+            } catch (error) {
+                console.error('Failed to remove from localStorage:', error);
+                return false;
+            }
+        }
+        function isLocalStorageAvailable() {
+            try {
+                const test = '__localStorage_test__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+        function initializeStorage() {
+            if (!isLocalStorageAvailable()) {
+                showStatus('Warning: Local storage is not available. Donation history will not persist across sessions.', 'error');
+                return false;
+            }
+            return true;
+        }
+        function handleError(error, context) {
+            console.error(`Error in ${context}:`, error);
+            const message = error.message || error.toString() || 'Unknown error occurred';
+            showStatus(`${context} failed: ${message}`, 'error');
+        }
+
         async function connectWallet() {
             try {
                 if (!window.aptos) {
-                    showMessage('Petra Wallet not found. Please install the Petra Wallet extension.', 'error');
+                    showStatus('Please install Petra Wallet extension from Chrome Web Store', 'error');
                     return;
                 }
-
+                showStatus('Connecting to Petra Wallet...', 'info');
                 const response = await window.aptos.connect();
-                account = response;
-
-                try {
-                    const network = await window.aptos.network();
-                    document.getElementById('currentNetwork').textContent = network.name || network || 'Unknown';
-                } catch (err) {
-                    document.getElementById('currentNetwork').textContent = 'Unknown';
+                
+                if (!response || !response.address) {
+                    throw new Error('Failed to get wallet address');
                 }
 
-                setConnectionUI(true);
-                document.getElementById('walletAddress').textContent = `Connected: ${account.address}`;
+                currentAccount = response;
+                document.getElementById('walletAddress').textContent = currentAccount.address;
+                document.getElementById('connectSection').classList.add('hidden');
+                document.getElementById('walletSection').classList.remove('hidden');
 
-                balanceCache.clear();
-                await loadTransactionHistory();
+                loadDonationHistory();
+                updateDonationDisplay();
+                updateImpactMetrics();
+                loadSpendingData();
+                showStatus('Successfully connected to Petra Wallet!', 'success');
                 
-                showMessage('Wallet connected successfully!', 'success');
+                console.log('Connected account:', currentAccount);
+
             } catch (error) {
-                showMessage('Failed to connect wallet: ' + (error?.message || String(error)), 'error');
+                handleError(error, 'Wallet connection');
+                currentAccount = null;
             }
         }
 
-        // ====== Bootstrap ======
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Event listeners
-            document.getElementById('connectBtn').addEventListener('click', connectWallet);
-            document.getElementById('updateAddresses').addEventListener('click', updateAddresses);
-            document.getElementById('donateBtn').addEventListener('click', sendDonation);
-            document.getElementById('refreshTransactions').addEventListener('click', loadTransactionHistory);
+        async function disconnectWallet() {
+            try {
+                if (window.aptos && window.aptos.disconnect) {
+                    await window.aptos.disconnect();
+                }
+                
+                currentAccount = null;
+                donationHistory = [];
+                
+                document.getElementById('connectSection').classList.remove('hidden');
+                document.getElementById('walletSection').classList.add('hidden');
+                document.getElementById('walletAddress').textContent = 'Not connected';
+                
+                updateDonationDisplay();
+                updateImpactMetrics();
+                showStatus('Wallet disconnected', 'info');
+
+            } catch (error) {
+                handleError(error, 'Wallet disconnection');
+            }
+        }
+
+        function loadSpendingData() {
+            charitySpendingData = [];
+            const charityAddresses = [...new Set(donationHistory.map(tx => tx.recipient))];
+            if (charityAddresses.length === 0) {
+                updateSpendingDisplay();
+                return;
+            }
+            charityAddresses.forEach(address => {
+                const spendingKey = `${CHARITY_SPENDING_PREFIX}${address}`;
+                const savedSpending = getLocalStorage(spendingKey, []);
+                charitySpendingData.push(...savedSpending);
+            });
+            charitySpendingData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
-            // Filter tab event listeners
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                    e.target.classList.add('active');
-                    
-                    currentFilter = e.target.dataset.filter;
-                    renderTransactions(transactionHistory);
-                });
-            });
+            updateSpendingDisplay();
+        }
 
-            // Validate donation amount input
-            document.getElementById('donationAmount').addEventListener('input', function (e) {
-                const value = parseFloat(e.target.value);
-                if (value && value < 0.01) {
-                    e.target.setCustomValidity('Minimum donation amount is 0.01 APT');
+        function generateSpendingForDonation(donation) {
+            const charityAddress = donation.recipient;
+            const donationAmount = parseFloat(donation.amount);
+            const numSpending = Math.min(4, Math.max(2, Math.floor(donationAmount / 5) + 1));
+            const spendingItems = [];
+            let remainingAmount = donationAmount;
+            const categories = Object.keys(spendingCategories);
+            
+            for (let i = 0; i < numSpending && remainingAmount > 0.1; i++) {
+                const category = categories[Math.floor(Math.random() * categories.length)];
+                const activities = spendingCategories[category];
+                const activity = activities[Math.floor(Math.random() * activities.length)];
+                const maxSpend = Math.min(remainingAmount, donationAmount * 0.6);
+                const minSpend = Math.min(remainingAmount * 0.2, maxSpend);
+                const spendAmount = Math.random() * (maxSpend - minSpend) + minSpend;
+                const spendingDate = new Date(new Date(donation.timestamp).getTime() + (i + 1) * 24 * 60 * 60 * 1000);
+                const spending = {
+                    id: `${donation.hash}_${i}`,
+                    title: activity.title,
+                    description: activity.description,
+                    amount: parseFloat(spendAmount.toFixed(3)),
+                    category: category,
+                    charityAddress: charityAddress,
+                    donationHash: donation.hash,
+                    timestamp: spendingDate.toISOString(),
+                    date: spendingDate.toLocaleDateString(),
+                    time: spendingDate.toLocaleTimeString()
+                };
+                
+                spendingItems.push(spending);
+                remainingAmount -= spendAmount;
+            }
+            const spendingKey = `${CHARITY_SPENDING_PREFIX}${charityAddress}`;
+            const existingSpending = getLocalStorage(spendingKey, []);
+            const newSpending = spendingItems.filter(item => 
+                !existingSpending.some(existing => existing.id === item.id)
+            );
+            
+            if (newSpending.length > 0) {
+                const updatedSpending = [...existingSpending, ...newSpending];
+                setLocalStorage(spendingKey, updatedSpending);
+                loadSpendingData();
+                
+                return newSpending.length;
+            }
+            
+            return 0;
+        }
+
+        function refreshSpendingData() {
+            if (donationHistory.length === 0) {
+                showStatus('No donations found. Make a donation first to see spending data.', 'info');
+                return;
+            }
+
+            showStatus('Checking for new charity spending updates...', 'info');
+            setTimeout(() => {
+                const recentDonations = donationHistory.filter(donation => {
+                    const donationDate = new Date(donation.timestamp);
+                    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                    return donationDate > sevenDaysAgo;
+                });
+
+                let newSpendingCount = 0;
+                recentDonations.forEach(donation => {
+                    if (Math.random() < 0.3) {
+                        const charityAddress = donation.recipient;
+                        const categories = Object.keys(spendingCategories);
+                        const category = categories[Math.floor(Math.random() * categories.length)];
+                        const activities = spendingCategories[category];
+                        const activity = activities[Math.floor(Math.random() * activities.length)];
+                        
+                        const spendAmount = Math.random() * (parseFloat(donation.amount) * 0.4) + 1;
+                        const spending = {
+                            id: `refresh_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                            title: activity.title,
+                            description: activity.description + " (Recent update)",
+                            amount: parseFloat(spendAmount.toFixed(3)),
+                            category: category,
+                            charityAddress: charityAddress,
+                            donationHash: donation.hash,
+                            timestamp: new Date().toISOString(),
+                            date: new Date().toLocaleDateString(),
+                            time: new Date().toLocaleTimeString()
+                        };
+                        const spendingKey = `${CHARITY_SPENDING_PREFIX}${charityAddress}`;
+                        const existingSpending = getLocalStorage(spendingKey, []);
+                        const updatedSpending = [spending, ...existingSpending];
+                        setLocalStorage(spendingKey, updatedSpending);
+                        
+                        newSpendingCount++;
+                    }
+                });
+                
+                loadSpendingData();
+                
+                if (newSpendingCount > 0) {
+                    showStatus(`🎉 Found ${newSpendingCount} new spending updates from your donated charities!`, 'success');
                 } else {
-                    e.target.setCustomValidity('');
+                    showStatus('✅ All spending data is up to date!', 'success');
+                }
+            }, 1500);
+        }
+
+        function updateSpendingDisplay() {
+            const spendingList = document.getElementById('spendingList');
+            
+            if (donationHistory.length === 0) {
+                spendingList.innerHTML = `
+                    <div class="no-transactions">
+                        💡 <strong>No donations yet!</strong><br>
+                        Make your first donation to see how charities use your contributions.
+                    </div>
+                `;
+                document.getElementById('medicalSpending').textContent = '0.0 APT';
+                document.getElementById('educationSpending').textContent = '0.0 APT';
+                document.getElementById('foodSpending').textContent = '0.0 APT';
+                document.getElementById('housingSpending').textContent = '0.0 APT';
+                return;
+            }
+            
+            if (charitySpendingData.length === 0) {
+                spendingList.innerHTML = `
+                    <div class="no-transactions">
+                        📊 <strong>Spending data loading...</strong><br>
+                        Your donated charities haven't reported spending yet. Click "🔄 Update" to check for new data.
+                    </div>
+                `;
+                const donatedByCategory = { medical: 0, education: 0, food: 0, housing: 0 };
+                donationHistory.forEach(donation => {
+                    const amount = parseFloat(donation.amount) / 4;
+                    Object.keys(donatedByCategory).forEach(category => {
+                        donatedByCategory[category] += amount;
+                    });
+                });
+                
+                document.getElementById('medicalSpending').textContent = `${donatedByCategory.medical.toFixed(1)} APT`;
+                document.getElementById('educationSpending').textContent = `${donatedByCategory.education.toFixed(1)} APT`;
+                document.getElementById('foodSpending').textContent = `${donatedByCategory.food.toFixed(1)} APT`;
+                document.getElementById('housingSpending').textContent = `${donatedByCategory.housing.toFixed(1)} APT`;
+                return;
+            }
+            const spendingByCharity = {};
+            charitySpendingData.forEach(spending => {
+                const address = spending.charityAddress;
+                if (!spendingByCharity[address]) {
+                    spendingByCharity[address] = [];
+                }
+                spendingByCharity[address].push(spending);
+            });
+            let spendingHtml = '';
+            Object.keys(spendingByCharity).forEach(address => {
+                const shortAddress = `${address.substring(0, 10)}...${address.substring(address.length - 8)}`;
+                const charitySpending = spendingByCharity[address];
+                const totalSpent = charitySpending.reduce((sum, s) => sum + s.amount, 0);
+                const totalDonated = donationHistory
+                    .filter(d => d.recipient === address)
+                    .reduce((sum, d) => sum + parseFloat(d.amount), 0);
+
+                spendingHtml += `
+                    <div style="background: #f8f9fa; padding: 1rem; margin-bottom: 1rem; border-radius: 10px; border-left: 4px solid #007bff;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <strong>🏛️ Charity: ${shortAddress}</strong>
+                            <small style="color: #666;">You donated: ${totalDonated.toFixed(3)} APT | They spent: ${totalSpent.toFixed(3)} APT</small>
+                        </div>
+                `;
+                
+                charitySpending.forEach(spending => {
+                    spendingHtml += `
+                        <div class="spending-item" style="margin-left: 1rem; margin-bottom: 0.5rem;">
+                            <div class="spending-details">
+                                <div class="spending-title">${spending.title}</div>
+                                <div class="spending-description">${spending.description}</div>
+                                <div class="spending-date">${spending.date} at ${spending.time}</div>
+                            </div>
+                            <div class="spending-cost">-${spending.amount.toFixed(3)} APT</div>
+                        </div>
+                    `;
+                });
+                
+                spendingHtml += '</div>';
+            });
+
+            spendingList.innerHTML = spendingHtml;
+            const categories = {
+                medical: 0,
+                education: 0,
+                food: 0,
+                housing: 0
+            };
+
+            charitySpendingData.forEach(item => {
+                if (categories.hasOwnProperty(item.category)) {
+                    categories[item.category] += item.amount;
                 }
             });
 
-            // Format address inputs
-            const addressInputIds = ['charityAddressInput', 'supplierAddressInput'];
-            addressInputIds.forEach((id) => {
-                document.getElementById(id).addEventListener('blur', function (e) {
-                    const value = e.target.value.trim();
-                    if (value && !isValidAddress(value)) {
-                        showMessage('Invalid address format. Address must start with 0x and be valid hex.', 'error');
-                        e.target.style.borderColor = '#dc3545';
-                    } else {
-                        e.target.style.borderColor = '';
-                    }
-                });
+            document.getElementById('medicalSpending').textContent = `${categories.medical.toFixed(1)} APT`;
+            document.getElementById('educationSpending').textContent = `${categories.education.toFixed(1)} APT`;
+            document.getElementById('foodSpending').textContent = `${categories.food.toFixed(1)} APT`;
+            document.getElementById('housingSpending').textContent = `${categories.housing.toFixed(1)} APT`;
+        }
 
-                document.getElementById(id).addEventListener('input', function (e) {
-                    let value = e.target.value.trim();
-                    if (value && !value.startsWith('0x')) {
-                        e.target.value = '0x' + value;
-                    }
-                });
-            });
+        function updateImpactMetrics() {
+            const totalDonations = donationHistory.length;
+            const totalAmount = donationHistory.reduce((sum, tx) => {
+                return sum + (parseFloat(tx.amount) || 0);
+            }, 0);
+            const livesImpacted = Math.floor(totalAmount * 2.5);
+            const projectsFunded = Math.floor(totalAmount / 5);
 
-            // Auto-connect if wallet exists and already connected
-            if (window.aptos) {
+            document.getElementById('totalDonationsMetric').textContent = totalDonations;
+            document.getElementById('totalAmountMetric').textContent = `${totalAmount.toFixed(3)} APT`;
+            document.getElementById('livesImpactedMetric').textContent = livesImpacted;
+            document.getElementById('projectsFundedMetric').textContent = projectsFunded;
+        }
+
+        async function sendTransaction() {
+            const recipientAddress = document.getElementById('recipientAddress').value.trim();
+            const amountStr = document.getElementById('amount').value.trim();
+            if (!recipientAddress || !amountStr) {
+                showStatus('Please fill in all fields', 'error');
+                return;
+            }
+
+            const amount = parseFloat(amountStr);
+            if (isNaN(amount) || amount <= 0) {
+                showStatus('Please enter a valid amount greater than 0', 'error');
+                return;
+            }
+
+            if (!recipientAddress.startsWith('0x') || recipientAddress.length < 10) {
+                showStatus('Please enter a valid wallet address', 'error');
+                return;
+            }
+            if (recipientAddress === '0xd42f5bc06353ac78ccebb345c10bf623b564ad4a9ff8c7fef58447e425f63763') {
+                if (!confirm('⚠️ WARNING: You are about to send to a dummy address! This will result in loss of funds. Are you sure you want to continue?')) {
+                    return;
+                }
+            }
+
+            const sendBtn = document.getElementById('sendBtn');
+            
+            try {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<span class="loading"></span>Sending...';
+                showStatus('Preparing transaction...', 'info');
+                const amountInOctas = Math.floor(amount * 100000000);
+
+                const transaction = {
+                    type: "entry_function_payload",
+                    function: "0x1::coin::transfer",
+                    type_arguments: ["0x1::aptos_coin::AptosCoin"],
+                    arguments: [recipientAddress, amountInOctas.toString()]
+                };
+
+                console.log('Submitting transaction:', transaction);
+
+                const pendingTransaction = await window.aptos.signAndSubmitTransaction(transaction);
+                
+                if (!pendingTransaction || !pendingTransaction.hash) {
+                    throw new Error('Transaction submission failed - no hash received');
+                }
+
+                console.log('Transaction submitted with hash:', pendingTransaction.hash);
+                showStatus('Transaction submitted! Checking confirmation...', 'info');
+                const confirmedTx = await waitForTransactionConfirmation(pendingTransaction.hash);
+                
+                if (confirmedTx.success) {
+                    showStatus(`Successfully sent ${amount} APT to charity! Your donation will create real impact. 🎉`, 'success');
+                    const transactionRecord = {
+                        id: Date.now() + Math.random(),
+                        amount: amount,
+                        recipient: recipientAddress,
+                        hash: pendingTransaction.hash,
+                        timestamp: new Date().toISOString(),
+                        date: new Date().toLocaleDateString(),
+                        time: new Date().toLocaleTimeString(),
+                        walletAddress: currentAccount.address
+                    };
+                    
+                    donationHistory.unshift(transactionRecord);
+                    saveDonationHistory();
+                    updateDonationDisplay();
+                    updateImpactMetrics();
+                    setTimeout(() => {
+                        const newSpendingItems = generateSpendingForDonation(transactionRecord);
+                        if (newSpendingItems > 0) {
+                            showStatus(`📊 Generated ${newSpendingItems} spending records for your donation!`, 'success');
+                        }
+                    }, 2000);
+                    document.getElementById('amount').value = '';
+                } else {
+                    throw new Error('Transaction failed on blockchain');
+                }
+
+            } catch (error) {
+                console.error('Transaction error:', error);
+                if (error.message.includes('timeout')) {
+                    showStatus('Transaction may still be processing. Check your wallet or Aptos Explorer for confirmation.', 'error');
+                } else {
+                    handleError(error, 'Transaction');
+                }
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = 'Send Donation';
+            }
+        }
+
+        async function waitForTransactionConfirmation(txHash) {
+            const maxAttempts = 60;
+            const delayMs = 2000;
+            
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
                 try {
-                    const connected = await window.aptos.isConnected();
-                    if (connected) {
-                        await connectWallet();
+                    console.log(`Checking transaction status (attempt ${attempt}/${maxAttempts})`);
+                    
+                    const response = await fetch(`${APTOS_NODE_URL}/transactions/by_hash/${txHash}`);
+                    
+                    if (response.ok) {
+                        const tx = await response.json();
+                        console.log('Transaction status:', tx);
+                        
+                        if (tx.success === true) {
+                            console.log('Transaction confirmed successfully!');
+                            return tx;
+                        } else if (tx.success === false) {
+                            throw new Error(`Transaction failed: ${tx.vm_status || 'Unknown error'}`);
+                        }
+                    } else if (response.status !== 404) {
+                        console.warn(`API error (attempt ${attempt}):`, response.status, response.statusText);
                     }
-                } catch (err) {
-                    console.log('Auto-connect check failed:', err.message);
+                } catch (fetchError) {
+                    console.log(`Fetch error (attempt ${attempt}):`, fetchError.message);
                 }
+                const remaining = maxAttempts - attempt;
+                if (remaining > 0) {
+                    showStatus(`Waiting for confirmation... (${remaining} attempts remaining)`, 'info');
+                    await new Promise(resolve => setTimeout(resolve, delayMs));
+                }
+            }
+            
+            throw new Error('Transaction confirmation timeout. Transaction may still be processing.');
+        }
 
-                // Wallet event listeners
-                if (window.aptos.onAccountChange) {
-                    window.aptos.onAccountChange((newAccount) => {
-                        if (newAccount) {
-                            account = newAccount;
-                            document.getElementById('walletAddress').textContent = `Connected: ${account.address}`;
-                            setConnectionUI(true);
-                            balanceCache.clear();
-                            loadTransactionHistory();
-                        } else {
-                            account = null;
-                            setConnectionUI(false);
-                            document.getElementById('walletAddress').textContent = '';
-                            balanceCache.clear();
-                            transactionHistory = [];
-                            renderTransactions([]);
-                            updateTransactionStats([], []);
-                        }
-                    });
+        function saveDonationHistory() {
+            if (currentAccount && currentAccount.address) {
+                try {
+                    const key = `${STORAGE_PREFIX}${currentAccount.address}`;
+                    const success = setLocalStorage(key, donationHistory);
+                    
+                    if (success) {
+                        updateGlobalStats();
+                        showStatus('💾 Donation history saved permanently!', 'success');
+                    }
+                } catch (error) {
+                    console.warn('Could not save donation history:', error);
+                    showStatus('Warning: Could not save donation history permanently.', 'error');
                 }
+            }
+        }
 
-                if (window.aptos.onNetworkChange) {
-                    window.aptos.onNetworkChange((network) => {
-                        const name = typeof network === 'string' ? network : network?.name;
-                        if (name && name.toLowerCase() !== NETWORK) {
-                            showMessage(`Please switch to ${NETWORK} network in your wallet`, 'error');
-                        }
-                    });
+        function loadDonationHistory() {
+            if (currentAccount && currentAccount.address) {
+                try {
+                    const key = `${STORAGE_PREFIX}${currentAccount.address}`;
+                    const savedHistory = getLocalStorage(key, []);
+                    donationHistory = Array.isArray(savedHistory) ? savedHistory : [];
+                    
+                    console.log(`Loaded ${donationHistory.length} donation records from localStorage`);
+                    
+                    if (donationHistory.length > 0) {
+                        showStatus(`✅ Loaded ${donationHistory.length} saved donation records!`, 'success');
+                    }
+                } catch (error) {
+                    console.warn('Could not load donation history:', error);
+                    donationHistory = [];
                 }
+            }
+        }
+
+        function updateGlobalStats() {
+            try {
+                const totalAmount = donationHistory.reduce((sum, tx) => sum + (parseFloat(tx.amount) || 0), 0);
+                const stats = {
+                    lastUpdated: new Date().toISOString(),
+                    totalDonations: donationHistory.length,
+                    totalAmount: totalAmount,
+                    walletAddress: currentAccount.address
+                };
+                setLocalStorage(GLOBAL_STATS_KEY, stats);
+            } catch (error) {
+                console.warn('Could not update global stats:', error);
+            }
+        }
+
+        function exportHistory() {
+            if (donationHistory.length === 0) {
+                showStatus('No donation history to export.', 'info');
+                return;
+            }
+
+            try {
+                const exportData = {
+                    walletAddress: currentAccount.address,
+                    exportDate: new Date().toISOString(),
+                    totalDonations: donationHistory.length,
+                    totalAmount: donationHistory.reduce((sum, tx) => sum + (parseFloat(tx.amount) || 0), 0),
+                    donations: donationHistory,
+                    version: '1.0'
+                };
+
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `charity-donations-${currentAccount.address.slice(0, 8)}-${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showStatus('✅ Donation history exported successfully!', 'success');
+            } catch (error) {
+                handleError(error, 'Export history');
+            }
+        }
+
+        function importHistory(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importData = JSON.parse(e.target.result);
+                    if (!importData.donations || !Array.isArray(importData.donations)) {
+                        throw new Error('Invalid import file format');
+                    }
+                    const merge = confirm(
+                        `Found ${importData.donations.length} donations in import file.\n\n` +
+                        `Current history: ${donationHistory.length} donations\n` +
+                        `Import from: ${importData.walletAddress || 'Unknown wallet'}\n\n` +
+                        `Click OK to MERGE with existing history, or Cancel to REPLACE existing history.`
+                    );
+
+                    if (merge) {
+                        const existingHashes = new Set(donationHistory.map(tx => tx.hash));
+                        const newDonations = importData.donations.filter(tx => 
+                            tx.hash && !existingHashes.has(tx.hash)
+                        );
+                        
+                        donationHistory = [...donationHistory, ...newDonations];
+                        showStatus(`✅ Merged ${newDonations.length} new donations from import file!`, 'success');
+                    } else {
+                        donationHistory = importData.donations;
+                        showStatus(`✅ Replaced history with ${donationHistory.length} imported donations!`, 'success');
+                    }
+                    saveDonationHistory();
+                    updateDonationDisplay();
+                    updateImpactMetrics();
+
+                } catch (error) {
+                    handleError(error, 'Import history');
+                }
+                event.target.value = '';
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function updateDonationDisplay() {
+            const totalDonatedElement = document.getElementById('totalDonated');
+            const transactionListElement = document.getElementById('transactionList');
+
+            if (!totalDonatedElement || !transactionListElement) {
+                console.warn('Donation display elements not found');
+                return;
+            }
+            const totalAmount = donationHistory.reduce((sum, tx) => {
+                return sum + (parseFloat(tx.amount) || 0);
+            }, 0);
+            totalDonatedElement.textContent = `Total: ${totalAmount.toFixed(4)} APT`;
+            if (donationHistory.length === 0) {
+                transactionListElement.innerHTML = `
+                    <div class="no-transactions">
+                        No donations made yet. Your charity donations will appear here and be saved permanently.
+                    </div>
+                `;
+            } else {
+                transactionListElement.innerHTML = donationHistory.map(tx => {
+                    const amount = parseFloat(tx.amount) || 0;
+                    const recipient = tx.recipient || 'Unknown';
+                    const shortRecipient = recipient.length > 18 ? 
+                        `${recipient.substring(0, 10)}...${recipient.substring(recipient.length - 8)}` : 
+                        recipient;
+                    const hash = tx.hash || '';
+                    const shortHash = hash.length > 8 ? `${hash.substring(0, 8)}...` : hash;
+                    
+                    return `
+                        <div class="transaction-item">
+                            <div class="transaction-details">
+                                <div class="transaction-amount">+${amount.toFixed(4)} APT</div>
+                                <div class="transaction-address">To: ${shortRecipient}</div>
+                                <div class="transaction-time">${tx.date || 'Unknown date'} at ${tx.time || 'Unknown time'}</div>
+                            </div>
+                            <div class="transaction-hash" onclick="viewTransaction('${hash}')" title="View on Aptos Explorer">
+                                ${shortHash}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function viewTransaction(hash) {
+            if (hash) {
+                const explorerUrl = `https://explorer.aptoslabs.com/txn/${hash}?network=testnet`;
+                window.open(explorerUrl, '_blank');
+            }
+        }
+
+        function clearHistory() {
+            if (donationHistory.length === 0) {
+                showStatus('No donation history to clear.', 'info');
+                return;
+            }
+
+            const totalAmount = donationHistory.reduce((sum, tx) => sum + (parseFloat(tx.amount) || 0), 0);
+            
+            if (confirm(
+                `⚠️ Are you sure you want to permanently delete your donation history?\n\n` +
+                `This will remove:\n` +
+                `• ${donationHistory.length} donation records\n` +
+                `• Total of ${totalAmount.toFixed(4)} APT donated\n\n` +
+                `This action cannot be undone!`
+            )) {
+                try {
+                    donationHistory = [];
+                    if (currentAccount && currentAccount.address) {
+                        const key = `${STORAGE_PREFIX}${currentAccount.address}`;
+                        removeLocalStorage(key);
+                    }
+                    
+                    updateDonationDisplay();
+                    updateImpactMetrics();
+                    showStatus('🗑️ Donation history permanently cleared', 'info');
+                } catch (error) {
+                    handleError(error, 'Clear history');
+                }
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            if (!statusDiv) return;
+            
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusDiv.classList.remove('hidden');
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.classList.add('hidden');
+                }, 5000);
+            } else if (type === 'info') {
+                setTimeout(() => {
+                    statusDiv.classList.add('hidden');
+                }, 4000);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStorage();
+            const donationForm = document.getElementById('donationForm');
+            if (donationForm) {
+                donationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    sendTransaction();
+                });
+            }
+            loadSpendingData();
+            if (isLocalStorageAvailable()) {
+                console.log('✅ localStorage is available - donations will persist');
+            } else {
+                console.warn('❌ localStorage is not available - donations will not persist');
+            }
+        });
+        window.addEventListener('load', async function() {
+            try {
+                if (window.aptos && window.aptos.account) {
+                    const account = await window.aptos.account();
+                    if (account && account.address) {
+                        currentAccount = account;
+                        document.getElementById('walletAddress').textContent = currentAccount.address;
+                        document.getElementById('connectSection').classList.add('hidden');
+                        document.getElementById('walletSection').classList.remove('hidden');
+                        loadDonationHistory();
+                        updateDonationDisplay();
+                        updateImpactMetrics();
+                        loadSpendingData();
+                        showStatus('Wallet reconnected automatically!', 'success');
+                    }
+                }
+            } catch (error) {
+                console.log('Wallet not previously connected');
+            }
+        });
+        if (window.aptos && window.aptos.onAccountChange) {
+            try {
+                window.aptos.onAccountChange((account) => {
+                    if (account && account.address) {
+                        if (currentAccount) {
+                            saveDonationHistory();
+                        }
+                        
+                        currentAccount = account;
+                        document.getElementById('walletAddress').textContent = currentAccount.address;
+                        loadDonationHistory();
+                        updateDonationDisplay();
+                        updateImpactMetrics();
+                        showStatus(`Switched to wallet: ${account.address.slice(0, 10)}...`, 'info');
+                    } else {
+                        disconnectWallet();
+                    }
+                });
+            } catch (error) {
+                console.warn('Account change listener not available:', error);
+            }
+        }
+        setInterval(() => {
+            if (currentAccount && donationHistory.length > 0) {
+                const key = `${STORAGE_PREFIX}${currentAccount.address}`;
+                const currentSaved = getLocalStorage(key, []);
+                if (JSON.stringify(currentSaved) !== JSON.stringify(donationHistory)) {
+                    console.log('Auto-saving donation history...');
+                    saveDonationHistory();
+                }
+            }
+        }, 30000);
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden' && currentAccount && donationHistory.length > 0) {
+                console.log('Page hidden - saving donation history...');
+                saveDonationHistory();
+            }
+        });
+        window.addEventListener('beforeunload', function() {
+            if (currentAccount && donationHistory.length > 0) {
+                saveDonationHistory();
             }
         });
     </script>
