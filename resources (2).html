@@ -451,7 +451,7 @@
     </div>
 
     <script>
-        // Application state
+  
         let walletConnected = false;
         let connectedAccount = null;
         let totalReceived = 0;
@@ -461,12 +461,12 @@
         let lastCheckedSequenceNumber = 0;
         let monitoringInterval = null;
         
-        // Check if Aptos wallet is available
+        
         function isAptosWalletAvailable() {
             return typeof window.aptos !== 'undefined';
         }
         
-        // Connect wallet function
+       
         async function connectWallet() {
             if (!isAptosWalletAvailable()) {
                 showError('receiptError', 'Aptos wallet not detected. Please install Petra or another Aptos wallet.');
@@ -484,7 +484,6 @@
             }
         }
         
-        // Disconnect wallet function
         async function disconnectWallet() {
             try {
                 await window.aptos.disconnect();
@@ -497,7 +496,7 @@
             }
         }
         
-        // Update wallet UI
+       
         function updateWalletUI() {
             const statusElement = document.getElementById('walletStatus');
             const connectBtn = document.getElementById('connectWallet');
@@ -512,7 +511,7 @@
                 addressDisplay.style.display = 'block';
                 addressDisplay.textContent = 'My Address: ' + connectedAccount;
                 
-                // Start monitoring for incoming transactions
+               
                 startTransactionMonitoring();
             } else {
                 statusElement.textContent = 'Not Connected - Please connect your Aptos wallet';
@@ -521,31 +520,30 @@
                 disconnectBtn.style.display = 'none';
                 addressDisplay.style.display = 'none';
                 
-                // Stop monitoring
+               
                 stopTransactionMonitoring();
             }
             
             updateExpenseButton();
         }
         
-        // Start monitoring for incoming transactions
+      
         function startTransactionMonitoring() {
             if (monitoringInterval) {
                 clearInterval(monitoringInterval);
             }
             
             updateMonitoringStatus('🟢 Active - Checking for new transactions...');
-            
-            // Check every 30 seconds
+           
             monitoringInterval = setInterval(async () => {
                 await checkForIncomingTransactions();
             }, 30000);
             
-            // Initial check
+           
             checkForIncomingTransactions();
         }
         
-        // Stop monitoring
+       
         function stopTransactionMonitoring() {
             if (monitoringInterval) {
                 clearInterval(monitoringInterval);
@@ -554,12 +552,12 @@
             updateMonitoringStatus('⚫ Inactive - Connect wallet to start monitoring');
         }
         
-        // Update monitoring status display
+       
         function updateMonitoringStatus(status) {
             document.getElementById('autoDetectionStatus').textContent = status;
         }
         
-        // Check for incoming transactions (testnet implementation)
+       
         async function checkForIncomingTransactions() {
             if (!walletConnected || registeredCharities.length === 0) {
                 updateMonitoringStatus('🟡 Waiting - No charity addresses registered');
@@ -569,7 +567,7 @@
             try {
                 updateMonitoringStatus('🔄 Checking for new transactions...');
                 
-                // Testnet API call - using Aptos testnet fullnode
+               
                 const response = await fetch(`https://fullnode.testnet.aptoslabs.com/v1/accounts/${connectedAccount}/transactions?limit=10`);
                 
                 if (!response.ok) {
@@ -578,16 +576,16 @@
                 
                 const transactionData = await response.json();
                 
-                // Check for new incoming transactions from registered charities
+                
                 let foundNewTransaction = false;
                 
                 for (const tx of transactionData) {
-                    // Skip if we've already processed this transaction
+                  
                     if (tx.sequence_number <= lastCheckedSequenceNumber) {
                         continue;
                     }
                     
-                    // Check if it's a coin transfer to our address from a registered charity
+                   
                     if (tx.type === 'user_transaction' && 
                         tx.payload && 
                         tx.payload.function === '0x1::coin::transfer' &&
@@ -597,23 +595,23 @@
                         tx.payload.arguments && 
                         tx.payload.arguments[0] === connectedAccount) {
                         
-                        // Extract amount (convert from octa to APT)
+                       
                         const amountOcta = parseInt(tx.payload.arguments[1]);
-                        const amountAPT = amountOcta / 100000000; // 1 APT = 100,000,000 octa
+                        const amountAPT = amountOcta / 100000000;
                         
-                        // Auto-record this transaction
+                      
                         await autoRecordIncomingTransaction(tx.sender, amountAPT, tx.hash);
                         foundNewTransaction = true;
                     }
                 }
                 
-                // Update last checked sequence number
+               
                 if (transactionData.length > 0) {
                     lastCheckedSequenceNumber = Math.max(...transactionData.map(tx => tx.sequence_number));
                 }
                 
                 if (!foundNewTransaction) {
-                    // Also simulate for demo purposes (remove this in production)
+                  
                     if (Math.random() < 0.05) { // 5% chance for demo
                         const randomCharity = registeredCharities[Math.floor(Math.random() * registeredCharities.length)];
                         const randomAmount = (Math.random() * 5 + 0.5).toFixed(2);
@@ -629,9 +627,9 @@
             }
         }
         
-        // Automatically record detected incoming transaction
+        
         async function autoRecordIncomingTransaction(fromAddress, amount, txHash = null) {
-            // Check if we already recorded this transaction
+          
             const existingTx = transactions.find(tx => 
                 tx.isAutoDetected && 
                 tx.txHash === txHash && 
@@ -639,7 +637,7 @@
             );
             
             if (existingTx) {
-                return; // Already recorded
+                return; 
             }
             
             totalReceived += amount;
@@ -660,12 +658,12 @@
             updateBalanceDisplay();
             addTransactionToHistory(transaction);
             
-            // Show notification
+            
             showSuccess('receiptSuccess', `🎉 Auto-detected: Received ${amount} APT from registered charity! ${txHash ? 'TX: ' + txHash.substring(0, 10) + '...' : ''}`);
             updateExpenseButton();
         }
         
-        // Register charity address
+       
         function addCharityAddress() {
             const address = document.getElementById('charityAddress').value.trim();
             const addressPattern = /^0x[a-fA-F0-9]{64}$/;
@@ -692,13 +690,13 @@
             hideError('receiptError');
             showSuccess('receiptSuccess', 'Charity address registered successfully! Auto-detection is now active.');
             
-            // Restart monitoring with new address
+            
             if (walletConnected) {
                 startTransactionMonitoring();
             }
         }
         
-        // Update charity address list display
+        
         function updateCharityAddressList() {
             const listDiv = document.getElementById('addressList');
             
@@ -715,7 +713,7 @@
             `).join('');
         }
         
-        // Remove charity address
+       
         function removeCharityAddress(index) {
             registeredCharities.splice(index, 1);
             updateCharityAddressList();
@@ -726,7 +724,7 @@
             }
         }
         
-        // Update expense button state
+      
         function updateExpenseButton() {
             const expenseBtn = document.getElementById('recordExpense');
             const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
@@ -741,7 +739,7 @@
             }
         }
         
-        // Record fund receipt from charity
+      
         function recordReceipt() {
             const purpose = document.getElementById('receiptPurpose').value.trim();
             const amount = parseFloat(document.getElementById('receiptAmount').value);
@@ -756,7 +754,7 @@
                 return;
             }
             
-            // Record the receipt
+           
             totalReceived += amount;
             const transaction = {
                 id: 'receipt_' + Date.now(),
@@ -771,7 +769,7 @@
             updateBalanceDisplay();
             addTransactionToHistory(transaction);
             
-            // Clear form
+           
             document.getElementById('receiptPurpose').value = '';
             document.getElementById('receiptAmount').value = '';
             
@@ -780,7 +778,7 @@
             updateExpenseButton();
         }
         
-        // Record expense
+      
         function recordExpense() {
             const category = document.getElementById('expenseCategory').value;
             const description = document.getElementById('expenseDescription').value.trim();
@@ -802,7 +800,7 @@
                 return;
             }
             
-            // Record the expense
+            
             totalSpent += amount;
             const categoryNames = {
                 program: 'Program Activities',
@@ -829,7 +827,7 @@
             updateBalanceDisplay();
             addTransactionToHistory(transaction);
             
-            // Clear form
+            
             document.getElementById('expenseDescription').value = '';
             document.getElementById('expenseAmount').value = '';
             
@@ -838,7 +836,7 @@
             updateExpenseButton();
         }
         
-        // Update balance display
+       
         function updateBalanceDisplay() {
             const currentBalance = totalReceived - totalSpent;
             document.getElementById('totalReceived').textContent = totalReceived.toFixed(2) + ' APT';
@@ -846,11 +844,11 @@
             document.getElementById('totalSpent').textContent = totalSpent.toFixed(2) + ' APT';
         }
         
-        // Add transaction to history
+       
         function addTransactionToHistory(transaction) {
             const historyDiv = document.getElementById('transactionHistory');
             
-            // Remove "no transactions" message if it exists
+           
             if (historyDiv.querySelector('p')) {
                 historyDiv.innerHTML = '';
             }
@@ -882,7 +880,7 @@
             historyDiv.insertBefore(transactionDiv, historyDiv.firstChild);
         }
         
-        // Utility functions for showing/hiding messages
+       
         function showError(elementId, message) {
             const element = document.getElementById(elementId);
             element.textContent = message;
@@ -900,7 +898,7 @@
             setTimeout(() => hideError(elementId), 5000);
         }
         
-        // Event listeners
+       
         document.getElementById('connectWallet').addEventListener('click', connectWallet);
         document.getElementById('disconnectWallet').addEventListener('click', disconnectWallet);
         document.getElementById('recordReceipt').addEventListener('click', recordReceipt);
@@ -908,10 +906,10 @@
         document.getElementById('expenseAmount').addEventListener('input', updateExpenseButton);
         document.getElementById('addCharityAddress').addEventListener('click', addCharityAddress);
         
-        // Make removeCharityAddress globally available
+      
         window.removeCharityAddress = removeCharityAddress;
         
-        // Check wallet connection on page load
+       
         window.addEventListener('load', async () => {
             if (isAptosWalletAvailable()) {
                 try {
@@ -926,7 +924,7 @@
                 }
             }
             
-            // Initialize balance display
+
             updateBalanceDisplay();
         });
     </script>
