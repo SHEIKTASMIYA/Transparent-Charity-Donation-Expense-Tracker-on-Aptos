@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charity Management System - Enhanced</title>
+    <title>Charity Management Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -21,414 +21,307 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
             overflow: hidden;
         }
 
         .header {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
             color: white;
-            padding: 40px;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
-            font-size: 3em;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .header p {
-            font-size: 1.3em;
-            opacity: 0.9;
+        .wallet-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .content {
+        .main-content {
             padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
         }
 
-        .section {
-            margin-bottom: 40px;
-            padding: 30px;
+        .card {
+            background: white;
             border-radius: 15px;
-            background: #f8f9fa;
-            border-left: 5px solid #4facfe;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .section h2 {
-            color: #2c3e50;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            color: #333;
             margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #4facfe;
+            padding-bottom: 10px;
+        }
+
+        .balance-display {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4facfe;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 2px 5px rgba(79, 172, 254, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-box.spent {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333;
+        }
+
+        .stat-box.available {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .stat-value {
             font-size: 1.8em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-weight: bold;
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
         }
 
-        label {
+        .donations-list, .spending-list {
+            max-height: 350px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+
+        .donation-item, .spending-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #4facfe;
+            transition: transform 0.2s ease;
+        }
+
+        .spending-item {
+            border-left: 5px solid #f5576c;
+        }
+
+        .donation-item:hover, .spending-item:hover {
+            transform: scale(1.02);
+        }
+
+        .donation-amount, .spending-amount {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .donation-from, .spending-to {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .spending-category {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #333;
         }
 
-        input, textarea, select {
+        .input-group input, .input-group select {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e1e8ed;
-            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
             font-size: 16px;
-            transition: all 0.3s ease;
+            transition: border-color 0.3s ease;
         }
 
-        input:focus, textarea:focus, select:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #4facfe;
             box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
         }
 
-        .btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            text-decoration: none;
-            display: inline-block;
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 500;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        .btn:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
-        .btn.success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
         }
 
-        .btn.danger {
-            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
-        }
-
-        .btn.warning {
-            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
-            color: #212529;
-        }
-
-        .wallet-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .wallet-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            border: 2px solid #e1e8ed;
-            transition: transform 0.3s ease;
-        }
-
-        .wallet-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .wallet-card h3 {
-            color: #4facfe;
-            margin-bottom: 20px;
-            font-size: 1.4em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .wallet-detail {
-            margin-bottom: 15px;
-            padding: 10px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .wallet-detail:last-child {
-            border-bottom: none;
-        }
-
-        .address-display {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
+        .resource-item {
             background: #f8f9fa;
-            padding: 8px;
-            border-radius: 6px;
-            word-break: break-all;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
             border: 1px solid #e9ecef;
         }
 
-        .status {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        .status.connected {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status.disconnected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status.initialized {
-            background: #cce5ff;
-            color: #004085;
-        }
-
-        .donations-container {
-            max-height: 500px;
-            overflow-y: auto;
-            border: 2px solid #e1e8ed;
-            border-radius: 12px;
-            background: white;
-        }
-
-        .donation-item {
-            background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
-            margin: 10px;
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 5px solid #4facfe;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .donation-item:hover {
-            transform: translateX(5px);
-        }
-
-        .donation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .donation-amount {
-            font-size: 1.5em;
+        .resource-name {
             font-weight: bold;
-            color: #28a745;
-        }
-
-        .donation-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .detail-label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .detail-value {
-            font-size: 14px;
             color: #2c3e50;
-            font-weight: 500;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
+        .resource-wallet {
+            font-family: monospace;
+            font-size: 0.85em;
+            color: #6c757d;
+            margin: 5px 0;
         }
 
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            border: 2px solid #e1e8ed;
-            transition: transform 0.3s ease;
+        .spending-analytics {
+            margin-top: 20px;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-value {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #4facfe;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            color: #666;
-            font-weight: 500;
-            text-transform: uppercase;
-            font-size: 14px;
-        }
-
-        .resource-spending {
-            background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
-            border-left-color: #dc3545;
-        }
-
-        .spending-form {
+        .category-breakdown {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .spending-form .form-group {
-            margin-bottom: 0;
-        }
-
-        .spending-history {
-            max-height: 300px;
-            overflow-y: auto;
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            border: 1px solid #e1e8ed;
-        }
-
-        .spending-item {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #dc3545;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .explorer-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: #007bff;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 12px;
-            transition: background 0.2s ease;
-        }
-
-        .explorer-link:hover {
-            background: #0056b3;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            margin: 20px 0;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4facfe;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .message {
-            padding: 15px;
-            border-radius: 8px;
+            gap: 10px;
             margin: 15px 0;
-            border: 1px solid;
         }
 
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
-        }
-
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
-        }
-
-        .message.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border-color: #bee5eb;
-        }
-
-        .empty-state {
+        .category-stat {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
             text-align: center;
-            padding: 40px;
-            color: #666;
+            border-left: 4px solid #4facfe;
         }
 
-        .empty-state img {
-            width: 80px;
-            height: 80px;
-            opacity: 0.5;
-            margin-bottom: 20px;
+        .category-stat.medical { border-left-color: #e74c3c; }
+        .category-stat.food { border-left-color: #f39c12; }
+        .category-stat.education { border-left-color: #3498db; }
+        .category-stat.housing { border-left-color: #2ecc71; }
+        .category-stat.emergency { border-left-color: #9b59b6; }
+
+        .clear-data-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            margin-top: 15px;
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .spending-form {
+            .main-content {
                 grid-template-columns: 1fr;
+                padding: 20px;
             }
             
-            .wallet-grid {
-                grid-template-columns: 1fr;
+            .header {
+                padding: 20px;
             }
             
-            .donation-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+            .wallet-status {
+                position: static;
+                margin-top: 20px;
+                text-align: center;
+            }
+            
+            .stats-grid, .category-breakdown {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -436,764 +329,470 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏛️ Charity Management Portal</h1>
-            <p>Enhanced Donation Tracking & Resource Management System</p>
+            <h1>🏥 Charity Management Dashboard</h1>
+            <p>Manage donations and distribute resources with Petra Wallet</p>
+            <div class="wallet-status" id="walletStatus">
+                <span id="connectionStatus">Disconnected</span>
+            </div>
         </div>
 
-        <div class="content">
-            <!-- Connection Section -->
-            <div class="section">
-                <h2>🔗 Wallet Connection</h2>
-                <div id="connectionStatus" class="status disconnected">Not Connected</div>
-                <button id="connectBtn" class="btn">Connect Petra Wallet</button>
-                <button id="checkInitStatus" class="btn warning">Check Status</button>
-                <button id="initializeBtn" class="btn success">Initialize System</button>
-            </div>
-
-            <!-- Statistics Dashboard -->
-            <div class="section">
-                <h2>📊 Charity Dashboard</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalDonations">0</div>
-                        <div class="stat-label">Total Donations</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="donorCount">0</div>
-                        <div class="stat-label">Unique Donors</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalSpent">0</div>
-                        <div class="stat-label">Total Spent</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="availableFunds">0</div>
-                        <div class="stat-label">Available APT</div>
-                    </div>
+        <div class="main-content">
+            <!-- Donations Overview -->
+            <div class="card">
+                <h2>💰 Donations Overview</h2>
+                <div id="connectSection">
+                    <button class="btn" onclick="connectWallet()">Connect Petra Wallet</button>
                 </div>
-                <button id="refreshStats" class="btn">🔄 Refresh Dashboard</button>
-            </div>
-
-            <!-- Wallet Management -->
-            <div class="section">
-                <h2>👛 Wallet Management</h2>
-                <div class="wallet-grid">
-                    <div class="wallet-card">
-                        <h3>🏛️ Your Charity Wallet</h3>
-                        <div class="wallet-detail">
-                            <strong>Status:</strong> <span id="charityStatus">Not Connected</span>
+                
+                <div id="dashboardSection" style="display: none;">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value" id="totalReceived">0</div>
+                            <div class="stat-label">Total Received</div>
                         </div>
-                        <div class="wallet-detail">
-                            <strong>Address:</strong>
-                            <div class="address-display" id="charityAddress">Connect wallet first</div>
-                        </div>
-                        <div class="wallet-detail">
-                            <strong>Balance:</strong> <span id="charityBalance">0 APT</span>
+                        <div class="stat-box available">
+                            <div class="stat-value" id="availableFunds">0</div>
+                            <div class="stat-label">Available</div>
                         </div>
                     </div>
                     
-                    <div class="wallet-card">
-                        <h3>💝 Donor Addresses</h3>
-                        <div class="wallet-detail">
-                            <strong>Tracked Donors:</strong> <span id="trackedDonors">0</span>
-                        </div>
-                        <div class="wallet-detail">
-                            <strong>Latest Donor:</strong>
-                            <div class="address-display" id="latestDonor">No donations yet</div>
-                        </div>
-                        <button id="viewAllDonors" class="btn" style="margin-top: 10px;">View All Donors</button>
+                    <div class="donations-list" id="donationsList">
+                        <!-- Donations will be populated here -->
                     </div>
                     
-                    <div class="wallet-card">
-                        <h3>📦 Resource Supplier</h3>
-                        <div class="form-group">
-                            <label for="supplierAddressInput">Supplier Address:</label>
-                            <input type="text" id="supplierAddressInput" placeholder="0x..." />
-                        </div>
-                        <div class="wallet-detail">
-                            <strong>Current Supplier:</strong>
-                            <div class="address-display" id="supplierAddress">Not set</div>
-                        </div>
-                        <div class="wallet-detail">
-                            <strong>Supplier Balance:</strong> <span id="supplierBalance">-- APT</span>
-                        </div>
-                        <button id="updateSupplier" class="btn">Update Supplier</button>
-                    </div>
+                    <button class="btn" onclick="refreshDonations()" style="width: 100%;">
+                        Refresh Donations
+                    </button>
                 </div>
             </div>
 
-            <!-- Donations Received -->
-            <div class="section">
-                <h2>💰 Donations Received</h2>
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button id="refreshDonations" class="btn">🔄 Check New Donations</button>
-                    <button id="exportDonations" class="btn warning">📊 Export Report</button>
-                    <select id="donationFilter" style="width: auto;">
-                        <option value="all">All Donations</option>
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                    </select>
-                </div>
-                <div class="donations-container" id="donationsContainer">
-                    <div class="empty-state">
-                        <div style="font-size: 48px;">💰</div>
-                        <p>No donations received yet</p>
-                        <p style="font-size: 14px; color: #999;">Donations will appear here automatically</p>
+            <!-- Resource Management -->
+            <div class="card">
+                <h2>🎯 Resource Management</h2>
+                
+                <div id="resourceSection" style="display: none;">
+                    <div class="input-group">
+                        <label>Resource Provider Name:</label>
+                        <input type="text" id="resourceName" placeholder="Enter provider name">
                     </div>
-                </div>
-            </div>
-
-            <!-- Resource Spending -->
-            <div class="section resource-spending">
-                <h2>💳 Resource Spending</h2>
-                <div class="spending-form">
-                    <div class="form-group">
-                        <label for="spendAmount">Amount (APT):</label>
-                        <input type="number" id="spendAmount" step="0.01" min="0.01" placeholder="1.0" />
+                    
+                    <div class="input-group">
+                        <label>Provider Wallet Address:</label>
+                        <input type="text" id="resourceWallet" placeholder="0x...">
                     </div>
-                    <div class="form-group">
-                        <label for="resourceType">Resource Type:</label>
+                    
+                    <div class="input-group">
+                        <label>Amount to Send (APT):</label>
+                        <input type="number" id="sendAmount" placeholder="0.0" step="0.01" min="0">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Resource Type:</label>
                         <select id="resourceType">
                             <option value="medical">Medical Supplies</option>
-                            <option value="food">Food Distribution</option>
-                            <option value="education">Educational Materials</option>
-                            <option value="shelter">Shelter & Housing</option>
+                            <option value="food">Food & Nutrition</option>
+                            <option value="education">Education Materials</option>
+                            <option value="housing">Housing Support</option>
                             <option value="emergency">Emergency Relief</option>
-                            <option value="other">Other</option>
                         </select>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="spendDescription">Description:</label>
-                    <textarea id="spendDescription" rows="3" placeholder="Detailed description of resource purchase..."></textarea>
-                </div>
-                <div style="margin: 20px 0;">
-                    <button id="spendForResources" class="btn danger">💸 Spend for Resources</button>
-                    <button id="previewSpending" class="btn">👁️ Preview Transaction</button>
-                </div>
-                
-                <h3 style="margin-top: 30px; margin-bottom: 15px;">Recent Spending History</h3>
-                <div class="spending-history" id="spendingHistory">
-                    <div class="empty-state">
-                        <div style="font-size: 48px;">📦</div>
-                        <p>No resource spending yet</p>
+                    
+                    <div class="input-group">
+                        <label>Description (Optional):</label>
+                        <input type="text" id="description" placeholder="Brief description of the resource">
+                    </div>
+                    
+                    <button class="btn" onclick="sendToResource()" style="width: 100%;">
+                        Send to Resource Provider
+                    </button>
+                    
+                    <div id="resourceHistory">
+                        <h3 style="margin-top: 30px; margin-bottom: 15px;">Recent Distributions</h3>
+                        <div id="distributionsList">
+                            <!-- Distribution history will be shown here -->
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Loading and Messages -->
-            <div id="loadingSection" class="loading">
-                <div class="spinner"></div>
-                <p>Processing transaction...</p>
+            <!-- Spending Analytics -->
+            <div class="card">
+                <h2>📊 Spending Analytics</h2>
+                
+                <div id="spendingSection" style="display: none;">
+                    <div class="stats-grid">
+                        <div class="stat-box spent">
+                            <div class="stat-value" id="totalSpent">0</div>
+                            <div class="stat-label">Total Spent</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="spendingCount">0</div>
+                            <div class="stat-label">Transactions</div>
+                        </div>
+                    </div>
+
+                    <div class="spending-analytics">
+                        <h4>Category Breakdown</h4>
+                        <div class="category-breakdown" id="categoryBreakdown">
+                            <!-- Category spending will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="spending-list" id="spendingList">
+                        <h4 style="margin-bottom: 15px;">Recent Spending</h4>
+                        <!-- Spending items will be populated here -->
+                    </div>
+
+                    <button class="btn clear-data-btn" onclick="clearSpendingData()" style="width: 100%;">
+                        Clear Spending Data
+                    </button>
+                </div>
             </div>
-
-            <div id="messages"></div>
         </div>
+
+        <div id="statusMessages"></div>
     </div>
 
-    <!-- Donor Modal -->
-    <div id="donorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; max-height: 80%; overflow-y: auto;">
-            <h2 style="margin-bottom: 20px;">👥 All Donors</h2>
-            <div id="allDonorsList"></div>
-            <button onclick="closeDonorModal()" class="btn" style="margin-top: 20px;">Close</button>
-        </div>
-    </div>
-
-    <script src="https://unpkg.com/@aptos-labs/ts-sdk@latest/dist/aptos.min.js"></script>
     <script>
-        const NETWORK = 'testnet';
-        const MODULE_ADDRESS = '0xe7851de0226c2ec677184a2a7359382e439176ffc45236aca218cabc38a199e9';
-        
-        let client;
-        let account = null;
-        let supplierAddr = '';
-        let isInitialized = false;
-        let donationHistory = [];
+        let walletConnected = false;
+        let userAddress = '';
+        let totalDonationsAmount = 0;
+        let totalSpentAmount = 0;
+        let donations = [];
+        let distributions = [];
         let spendingHistory = [];
-        let donorAddresses = new Set();
-
-        // Initialize client
-        async function initializeClient() {
+        const STORAGE_KEYS = {
+            spending: 'charity_spending_history',
+            distributions: 'charity_distributions',
+            totalSpent: 'charity_total_spent'
+        };
+        function loadStoredData() {
             try {
-                client = new window.Aptos.Aptos({
-                    fullnode: `https://fullnode.${NETWORK}.aptoslabs.com/v1`,
-                    indexer: `https://api.${NETWORK}.aptoslabs.com/v1/graphql`
-                });
-                console.log('✅ Aptos client initialized');
+                const storedSpending = localStorage.getItem(STORAGE_KEYS.spending);
+                const storedDistributions = localStorage.getItem(STORAGE_KEYS.distributions);
+                const storedTotalSpent = localStorage.getItem(STORAGE_KEYS.totalSpent);
+
+                if (storedSpending) {
+                    spendingHistory = JSON.parse(storedSpending);
+                }
+                if (storedDistributions) {
+                    distributions = JSON.parse(storedDistributions);
+                }
+                if (storedTotalSpent) {
+                    totalSpentAmount = parseFloat(storedTotalSpent);
+                }
             } catch (error) {
-                showMessage('Failed to initialize Aptos client: ' + error.message, 'error');
+                console.error('Error loading stored data:', error);
             }
         }
-
-        // Connect wallet
+        function saveToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.spending, JSON.stringify(spendingHistory));
+                localStorage.setItem(STORAGE_KEYS.distributions, JSON.stringify(distributions));
+                localStorage.setItem(STORAGE_KEYS.totalSpent, totalSpentAmount.toString());
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showMessage('Warning: Could not save data locally', 'error');
+            }
+        }
+        function isPetraAvailable() {
+            return typeof window.aptos !== 'undefined';
+        }
         async function connectWallet() {
-            try {
-                if (!window.aptos) {
-                    showMessage('Petra Wallet not found. Please install Petra Wallet extension.', 'error');
-                    return;
-                }
+            if (!isPetraAvailable()) {
+                showMessage('Please install Petra Wallet extension first!', 'error');
+                return;
+            }
 
+            try {
+                showMessage('Connecting to Petra Wallet...', 'info');
+                
                 const response = await window.aptos.connect();
-                account = response;
+                userAddress = response.address;
+                walletConnected = true;
                 
-                document.getElementById('connectionStatus').textContent = 'Connected';
-                document.getElementById('connectionStatus').className = 'status connected';
-                document.getElementById('charityStatus').textContent = 'Connected';
-                document.getElementById('charityAddress').textContent = account.address;
+                document.getElementById('connectionStatus').textContent = `Connected: ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+                document.getElementById('connectSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                document.getElementById('resourceSection').style.display = 'block';
+                document.getElementById('spendingSection').style.display = 'block';
                 
-                await refreshAllData();
-                showMessage('✅ Wallet connected successfully!', 'success');
+                showMessage('Wallet connected successfully!', 'success');
+                loadStoredData();
+                await refreshDonations();
+                updateAllDisplays();
+                
             } catch (error) {
-                showMessage('❌ Failed to connect wallet: ' + error.message, 'error');
+                console.error('Failed to connect wallet:', error);
+                showMessage('Failed to connect wallet. Please try again.', 'error');
             }
         }
+        async function refreshDonations() {
+            if (!walletConnected) return;
 
-        // Initialize system
-        async function initializeSystem() {
-            if (!account) {
-                showMessage('Please connect your wallet first.', 'error');
-                return;
-            }
-
-            showLoading(true);
             try {
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                isInitialized = true;
-                showMessage('✅ Charity system initialized successfully!', 'success');
-                await refreshAllData();
+                showMessage('Refreshing donation data...', 'info');
+                await simulateFetchDonations();
+                
+                updateAllDisplays();
+                showMessage('Donations refreshed successfully!', 'success');
+                
             } catch (error) {
-                showMessage('❌ Failed to initialize system: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
+                console.error('Failed to refresh donations:', error);
+                showMessage('Failed to refresh donations.', 'error');
             }
         }
-
-        // Get balance for address
-        async function getBalance(address) {
-            try {
-                const balance = await client.getAccountCoinsData({
-                    accountAddress: address,
-                    options: { limit: 100 }
-                });
-                
-                const aptCoin = balance.find(coin => 
-                    coin.coin_type === '0x1::aptos_coin::AptosCoin'
-                );
-                
-                return aptCoin ? (parseInt(aptCoin.amount) / 100000000) : 0;
-            } catch (error) {
-                console.error('Error fetching balance:', error);
-                return 0;
-            }
-        }
-
-        // Check for donations
-        async function checkDonations() {
-            if (!client || !account) {
-                showMessage('Please connect your wallet first.', 'error');
-                return;
-            }
-
-            showLoading(true);
-            try {
-                const transactions = await client.getAccountTransactions({
-                    accountAddress: account.address,
-                    options: { limit: 50 }
-                });
-
-                const newDonations = [];
-                donorAddresses.clear();
-                
-                for (const tx of transactions) {
-                    if (tx.type === 'user_transaction' && tx.success && tx.sender !== account.address) {
-                        const events = tx.events || [];
-                        for (const event of events) {
-                            if (event.type.includes('coin::DepositEvent')) {
-                                const amount = parseInt(event.data.amount) / 100000000;
-                                if (amount > 0) {
-                                    const donation = {
-                                        hash: tx.hash,
-                                        amount: amount,
-                                        timestamp: parseInt(tx.timestamp) / 1000,
-                                        sender: tx.sender,
-                                        gasUsed: tx.gas_used
-                                    };
-                                    newDonations.push(donation);
-                                    donorAddresses.add(tx.sender);
-                                }
-                            }
-                        }
-                    }
+        async function simulateFetchDonations() {
+            donations = [
+                {
+                    id: 1,
+                    amount: 25.5,
+                    from: '0x1234...5678',
+                    timestamp: new Date(Date.now() - 86400000).toISOString(),
+                    txHash: '0xabc123...'
+                },
+                {
+                    id: 2,
+                    amount: 42.3,
+                    from: '0x9876...5432',
+                    timestamp: new Date(Date.now() - 172800000).toISOString(),
+                    txHash: '0xdef456...'
+                },
+                {
+                    id: 3,
+                    amount: 18.7,
+                    from: '0x5555...1111',
+                    timestamp: new Date(Date.now() - 259200000).toISOString(),
+                    txHash: '0x789xyz...'
                 }
-
-                donationHistory = newDonations.sort((a, b) => b.timestamp - a.timestamp);
-                displayDonations(donationHistory);
-                updateStatistics();
-                
-                showMessage(`✅ Found ${newDonations.length} donations from ${donorAddresses.size} donors`, 'success');
-                
-            } catch (error) {
-                console.error('Error checking donations:', error);
-                showMessage('❌ Failed to check donations: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Display donations
-        function displayDonations(donations) {
-            const container = document.getElementById('donationsContainer');
+            ];
             
-            if (donations.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div style="font-size: 48px;">💰</div>
-                        <p>No donations received yet</p>
-                        <p style="font-size: 14px; color: #999;">Donations will appear here automatically</p>
-                    </div>
+            totalDonationsAmount = donations.reduce((sum, donation) => sum + donation.amount, 0);
+        }
+        function updateAllDisplays() {
+            updateDonationsDisplay();
+            updateDistributionsDisplay();
+            updateSpendingDisplay();
+        }
+        function updateDonationsDisplay() {
+            const availableFunds = totalDonationsAmount - totalSpentAmount;
+            
+            document.getElementById('totalReceived').textContent = `${totalDonationsAmount.toFixed(2)} APT`;
+            document.getElementById('availableFunds').textContent = `${availableFunds.toFixed(2)} APT`;
+            
+            const donationsList = document.getElementById('donationsList');
+            donationsList.innerHTML = '';
+            
+            donations.forEach(donation => {
+                const item = document.createElement('div');
+                item.className = 'donation-item';
+                item.innerHTML = `
+                    <div class="donation-amount">+${donation.amount.toFixed(2)} APT</div>
+                    <div class="donation-from">From: ${donation.from}</div>
+                    <div class="donation-from">${new Date(donation.timestamp).toLocaleDateString()}</div>
                 `;
-                return;
-            }
-
-            let html = '';
-            donations.forEach((donation, index) => {
-                const date = new Date(donation.timestamp * 1000).toLocaleString();
-                const donorShort = truncateAddress(donation.sender);
-                
-                html += `
-                    <div class="donation-item">
-                        <div class="donation-header">
-                            <div class="donation-amount">+${donation.amount.toFixed(4)} APT</div>
-                            <div style="font-size: 14px; color: #666;">#${index + 1}</div>
-                        </div>
-                        <div class="donation-details">
-                            <div class="detail-item">
-                                <div class="detail-label">Donor Address</div>
-                                <div class="detail-value">${donorShort}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Date & Time</div>
-                                <div class="detail-value">${date}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Gas Used</div>
-                                <div class="detail-value">${donation.gasUsed}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Transaction</div>
-                                <div class="detail-value">
-                                    <a href="https://explorer.aptoslabs.com/txn/${donation.hash}?network=${NETWORK}" 
-                                       target="_blank" class="explorer-link">
-                                        🔗 View Explorer
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                donationsList.appendChild(item);
             });
-            
-            container.innerHTML = html;
         }
-
-        // Update supplier
-        function updateSupplier() {
-            const newSupplierAddr = document.getElementById('supplierAddressInput').value.trim();
+        function updateSpendingDisplay() {
+            document.getElementById('totalSpent').textContent = `${totalSpentAmount.toFixed(2)} APT`;
+            document.getElementById('spendingCount').textContent = spendingHistory.length;
             
-            if (!newSupplierAddr) {
-                showMessage('Please enter a supplier address.', 'error');
-                return;
-            }
-            
-            if (!isValidAddress(newSupplierAddr)) {
-                showMessage('Please enter a valid Aptos address.', 'error');
-                return;
-            }
-            
-            supplierAddr = newSupplierAddr;
-            document.getElementById('supplierAddress').textContent = supplierAddr;
-            refreshSupplierBalance();
-            showMessage('✅ Supplier address updated successfully!', 'success');
+            updateCategoryBreakdown();
+            updateSpendingList();
         }
-
-        // Refresh supplier balance
-        async function refreshSupplierBalance() {
-            if (!supplierAddr || !client) return;
-            
-            try {
-                const balance = await getBalance(supplierAddr);
-                document.getElementById('supplierBalance').textContent = `${balance.toFixed(4)} APT`;
-            } catch (error) {
-                console.error('Error refreshing supplier balance:', error);
-            }
-        }
-
-        // Spend for resources
-        async function spendForResources() {
-            if (!account) {
-                showMessage('Please connect your wallet first.', 'error');
-                return;
-            }
-
-            if (!supplierAddr) {
-                showMessage('Please set supplier address first.', 'error');
-                return;
-            }
-
-            const amount = parseFloat(document.getElementById('spendAmount').value);
-            const resourceType = document.getElementById('resourceType').value;
-            const description = document.getElementById('spendDescription').value.trim();
-
-            if (!amount || amount <= 0) {
-                showMessage('Please enter a valid amount.', 'error');
-                return;
-            }
-
-            if (!description) {
-                showMessage('Please enter a description.', 'error');
-                return;
-            }
-
-            // Check if we have enough funds
-            const currentBalance = await getBalance(account.address);
-            if (amount > currentBalance) {
-                showMessage(`Insufficient funds. Available: ${currentBalance.toFixed(4)} APT`, 'error');
-                return;
-            }
-
-            showLoading(true);
-
-            try {
-                const amountOctas = Math.floor(amount * 100000000);
-
-                const transaction = await window.aptos.signAndSubmitTransaction({
-                    type: 'entry_function_payload',
-                    function: '0x1::aptos_account::transfer',
-                    arguments: [supplierAddr, amountOctas.toString()],
-                    type_arguments: []
-                });
-
-                console.log('💸 Resource payment transaction submitted:', transaction);
-
-                const result = await client.waitForTransaction({ 
-                    transactionHash: transaction.hash 
-                });
-
-                // Store spending record
-                const spending = {
-                    hash: transaction.hash,
-                    amount: amount,
-                    recipient: supplierAddr,
-                    resourceType: resourceType,
-                    description: description,
-                    timestamp: Date.now() / 1000
-                };
-                
-                spendingHistory.unshift(spending);
-                displaySpendingHistory();
-                updateStatistics();
-                
-                // Clear form
-                document.getElementById('spendAmount').value = '';
-                document.getElementById('spendDescription').value = '';
-                
-                await refreshAllData();
-                
-                showMessage(`✅ Successfully spent ${amount} APT for ${resourceType}!`, 'success');
-                
-            } catch (error) {
-                showMessage('❌ Failed to send payment: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Display spending history
-        function displaySpendingHistory() {
-            const container = document.getElementById('spendingHistory');
-            
-            if (spendingHistory.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div style="font-size: 48px;">📦</div>
-                        <p>No resource spending yet</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            spendingHistory.slice(0, 10).forEach((spending, index) => {
-                const date = new Date(spending.timestamp * 1000).toLocaleString();
-                const resourceIcon = getResourceIcon(spending.resourceType);
-                
-                html += `
-                    <div class="spending-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <div style="font-weight: bold; color: #dc3545;">-${spending.amount.toFixed(4)} APT</div>
-                            <div style="font-size: 12px; color: #666;">${date}</div>
-                        </div>
-                        <div><strong>${resourceIcon} ${spending.resourceType.toUpperCase()}:</strong> ${spending.description}</div>
-                        <div style="margin-top: 10px;">
-                            <a href="https://explorer.aptoslabs.com/txn/${spending.hash}?network=${NETWORK}" 
-                               target="_blank" class="explorer-link">
-                                🔗 View Transaction
-                            </a>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-
-        // Get resource icon
-        function getResourceIcon(resourceType) {
-            const icons = {
-                medical: '🏥',
-                food: '🍞',
-                education: '📚',
-                shelter: '🏠',
-                emergency: '🚨',
-                other: '📦'
+        function updateCategoryBreakdown() {
+            const categories = {
+                medical: { name: 'Medical', amount: 0, color: '#e74c3c' },
+                food: { name: 'Food', amount: 0, color: '#f39c12' },
+                education: { name: 'Education', amount: 0, color: '#3498db' },
+                housing: { name: 'Housing', amount: 0, color: '#2ecc71' },
+                emergency: { name: 'Emergency', amount: 0, color: '#9b59b6' }
             };
-            return icons[resourceType] || '📦';
-        }
 
-        // Update statistics
-        function updateStatistics() {
-            const totalDonated = donationHistory.reduce((sum, donation) => sum + donation.amount, 0);
-            const totalSpentAmount = spendingHistory.reduce((sum, spending) => sum + spending.amount, 0);
-            const uniqueDonors = donorAddresses.size;
-
-            document.getElementById('totalDonations').textContent = totalDonated.toFixed(2);
-            document.getElementById('donorCount').textContent = uniqueDonors;
-            document.getElementById('totalSpent').textContent = totalSpentAmount.toFixed(2);
-            document.getElementById('trackedDonors').textContent = uniqueDonors;
-            
-            if (donationHistory.length > 0) {
-                const latestDonor = donationHistory[0].sender;
-                document.getElementById('latestDonor').textContent = latestDonor;
-            }
-        }
-
-        // Refresh all data
-        async function refreshAllData() {
-            if (!client || !account) return;
-            
-            try {
-                // Refresh balance
-                const balance = await getBalance(account.address);
-                document.getElementById('charityBalance').textContent = `${balance.toFixed(4)} APT`;
-                document.getElementById('availableFunds').textContent = balance.toFixed(2);
-                
-                // Refresh supplier balance if set
-                if (supplierAddr) {
-                    await refreshSupplierBalance();
+            spendingHistory.forEach(spending => {
+                if (categories[spending.resourceType]) {
+                    categories[spending.resourceType].amount += spending.amount;
                 }
+            });
+
+            const categoryBreakdown = document.getElementById('categoryBreakdown');
+            categoryBreakdown.innerHTML = '';
+
+            Object.keys(categories).forEach(key => {
+                if (categories[key].amount > 0) {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = `category-stat ${key}`;
+                    categoryDiv.innerHTML = `
+                        <div style="font-weight: bold; color: ${categories[key].color}">${categories[key].amount.toFixed(2)} APT</div>
+                        <div style="font-size: 0.9em; color: #666;">${categories[key].name}</div>
+                    `;
+                    categoryBreakdown.appendChild(categoryDiv);
+                }
+            });
+        }
+        function updateSpendingList() {
+            const spendingList = document.getElementById('spendingList');
+            const header = spendingList.querySelector('h4');
+            spendingList.innerHTML = '';
+            if (header) spendingList.appendChild(header);
+
+            if (spendingHistory.length === 0) {
+                const noData = document.createElement('p');
+                noData.style.textAlign = 'center';
+                noData.style.color = '#666';
+                noData.textContent = 'No spending history yet';
+                spendingList.appendChild(noData);
+                return;
+            }
+            const sortedSpending = [...spendingHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            sortedSpending.slice(0, 10).forEach(spending => {
+                const item = document.createElement('div');
+                item.className = 'spending-item';
+                item.innerHTML = `
+                    <div class="spending-amount">-${spending.amount.toFixed(2)} APT</div>
+                    <div class="spending-to">To: ${spending.resourceName}</div>
+                    <div class="spending-to">${spending.resourceWallet}</div>
+                    <div class="spending-category">${spending.resourceType}</div>
+                    <div class="spending-to">${new Date(spending.timestamp).toLocaleDateString()}</div>
+                    ${spending.description ? `<div class="spending-to">Note: ${spending.description}</div>` : ''}
+                `;
+                spendingList.appendChild(item);
+            });
+        }
+        async function sendToResource() {
+            if (!walletConnected) {
+                showMessage('Please connect your wallet first!', 'error');
+                return;
+            }
+
+            const resourceName = document.getElementById('resourceName').value.trim();
+            const resourceWallet = document.getElementById('resourceWallet').value.trim();
+            const sendAmount = parseFloat(document.getElementById('sendAmount').value);
+            const resourceType = document.getElementById('resourceType').value;
+            const description = document.getElementById('description').value.trim();
+            const availableFunds = totalDonationsAmount - totalSpentAmount;
+
+            if (!resourceName || !resourceWallet || !sendAmount || sendAmount <= 0) {
+                showMessage('Please fill in all required fields correctly!', 'error');
+                return;
+            }
+
+            if (sendAmount > availableFunds) {
+                showMessage(`Insufficient funds! Available: ${availableFunds.toFixed(2)} APT`, 'error');
+                return;
+            }
+
+            try {
+                showMessage('Processing transaction...', 'info');
+                const payload = {
+                    type: "entry_function_payload",
+                    function: "0x1::coin::transfer",
+                    type_arguments: ["0x1::aptos_coin::AptosCoin"],
+                    arguments: [resourceWallet, (sendAmount * 100000000).toString()]
+                };
+                await simulateTransaction(payload);
+                const spendingRecord = {
+                    id: Date.now(),
+                    resourceName,
+                    resourceWallet,
+                    amount: sendAmount,
+                    resourceType,
+                    description,
+                    timestamp: new Date().toISOString(),
+                    txHash: '0x' + Math.random().toString(16).substr(2, 8) + '...'
+                };
+                spendingHistory.unshift(spendingRecord);
+                totalSpentAmount += sendAmount;
+                const distribution = {
+                    ...spendingRecord,
+                    id: distributions.length + 1
+                };
+                distributions.unshift(distribution);
+                saveToStorage();
+                document.getElementById('resourceName').value = '';
+                document.getElementById('resourceWallet').value = '';
+                document.getElementById('sendAmount').value = '';
+                document.getElementById('description').value = '';
                 
-                // Check for new donations
-                await checkDonations();
+                updateAllDisplays();
+                
+                showMessage(`Successfully sent ${sendAmount} APT to ${resourceName}!`, 'success');
                 
             } catch (error) {
-                console.error('Error refreshing data:', error);
+                console.error('Transaction failed:', error);
+                showMessage('Transaction failed. Please try again.', 'error');
             }
         }
-
-        // Show all donors modal
-        function showAllDonors() {
-            const modal = document.getElementById('donorModal');
-            const donorsList = document.getElementById('allDonorsList');
-            
-            if (donorAddresses.size === 0) {
-                donorsList.innerHTML = '<p>No donors found yet.</p>';
-            } else {
-                let html = '';
-                const donorStats = {};
+        function clearSpendingData() {
+            if (confirm('Are you sure you want to clear all spending data? This action cannot be undone.')) {
+                spendingHistory = [];
+                totalSpentAmount = 0;
+                distributions = [];
+                localStorage.removeItem(STORAGE_KEYS.spending);
+                localStorage.removeItem(STORAGE_KEYS.distributions);
+                localStorage.removeItem(STORAGE_KEYS.totalSpent);
                 
-                // Calculate stats for each donor
-                donationHistory.forEach(donation => {
-                    if (!donorStats[donation.sender]) {
-                        donorStats[donation.sender] = {
-                            total: 0,
-                            count: 0,
-                            lastDonation: 0
-                        };
-                    }
-                    donorStats[donation.sender].total += donation.amount;
-                    donorStats[donation.sender].count += 1;
-                    donorStats[donation.sender].lastDonation = Math.max(
-                        donorStats[donation.sender].lastDonation, 
-                        donation.timestamp
-                    );
-                });
-                
-                // Sort by total donation amount
-                const sortedDonors = Object.entries(donorStats)
-                    .sort(([,a], [,b]) => b.total - a.total);
-                
-                sortedDonors.forEach(([address, stats], index) => {
-                    const lastDonationDate = new Date(stats.lastDonation * 1000).toLocaleDateString();
-                    html += `
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #4facfe;">
-                            <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 10px;">
-                                <div style="font-weight: bold;">Donor #${index + 1}</div>
-                                <div style="color: #28a745; font-weight: bold;">${stats.total.toFixed(4)} APT</div>
-                            </div>
-                            <div style="font-family: monospace; font-size: 12px; background: white; padding: 8px; border-radius: 4px; margin: 10px 0;">${address}</div>
-                            <div style="display: flex; gap: 20px; font-size: 14px; color: #666;">
-                                <span><strong>Donations:</strong> ${stats.count}</span>
-                                <span><strong>Last:</strong> ${lastDonationDate}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                donorsList.innerHTML = html;
+                updateAllDisplays();
+                showMessage('Spending data cleared successfully!', 'success');
             }
+        }
+        function updateDistributionsDisplay() {
+            const distributionsList = document.getElementById('distributionsList');
+            distributionsList.innerHTML = '';
             
-            modal.style.display = 'block';
-        }
-
-        // Close donor modal
-        function closeDonorModal() {
-            document.getElementById('donorModal').style.display = 'none';
-        }
-
-        // Export donations report
-        function exportDonationsReport() {
-            if (donationHistory.length === 0) {
-                showMessage('No donations to export.', 'error');
+            if (distributions.length === 0) {
+                distributionsList.innerHTML = '<p style="text-align: center; color: #666;">No distributions yet</p>';
                 return;
             }
             
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Date,Donor Address,Amount (APT),Transaction Hash\n";
-            
-            donationHistory.forEach(donation => {
-                const date = new Date(donation.timestamp * 1000).toISOString();
-                csvContent += `${date},${donation.sender},${donation.amount},${donation.hash}\n`;
+            distributions.slice(0, 5).forEach(dist => {
+                const item = document.createElement('div');
+                item.className = 'resource-item';
+                item.innerHTML = `
+                    <div class="resource-name">${dist.resourceName} - ${dist.resourceType}</div>
+                    <div class="resource-wallet">${dist.resourceWallet}</div>
+                    <div style="margin-top: 5px;">
+                        <strong>${dist.amount.toFixed(2)} APT</strong> - 
+                        ${new Date(dist.timestamp).toLocaleDateString()}
+                    </div>
+                    ${dist.description ? `<div style="font-size: 0.9em; color: #666; margin-top: 5px;">${dist.description}</div>` : ''}
+                `;
+                distributionsList.appendChild(item);
             });
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `donations_report_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showMessage('✅ Donations report exported successfully!', 'success');
         }
-
-        // Filter donations
-        function filterDonations() {
-            const filter = document.getElementById('donationFilter').value;
-            let filteredDonations = [...donationHistory];
-            
-            const now = Date.now() / 1000;
-            const oneDayAgo = now - (24 * 60 * 60);
-            const oneWeekAgo = now - (7 * 24 * 60 * 60);
-            const oneMonthAgo = now - (30 * 24 * 60 * 60);
-            
-            switch (filter) {
-                case 'today':
-                    filteredDonations = donationHistory.filter(d => d.timestamp > oneDayAgo);
-                    break;
-                case 'week':
-                    filteredDonations = donationHistory.filter(d => d.timestamp > oneWeekAgo);
-                    break;
-                case 'month':
-                    filteredDonations = donationHistory.filter(d => d.timestamp > oneMonthAgo);
-                    break;
-            }
-            
-            displayDonations(filteredDonations);
+        async function simulateTransaction(payload) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
         }
-
-        // Preview spending transaction
-        function previewSpending() {
-            const amount = parseFloat(document.getElementById('spendAmount').value);
-            const resourceType = document.getElementById('resourceType').value;
-            const description = document.getElementById('spendDescription').value.trim();
-            
-            if (!amount || !description) {
-                showMessage('Please fill in amount and description first.', 'error');
-                return;
-            }
-            
-            const preview = `
-                <div class="message info">
-                    <h4>Transaction Preview:</h4>
-                    <p><strong>Amount:</strong> ${amount} APT</p>
-                    <p><strong>Resource Type:</strong> ${getResourceIcon(resourceType)} ${resourceType.toUpperCase()}</p>
-                    <p><strong>Recipient:</strong> ${supplierAddr || 'Not set'}</p>
-                    <p><strong>Description:</strong> ${description}</p>
-                    <p><strong>Estimated Gas:</strong> ~0.001 APT</p>
-                </div>
-            `;
-            
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML = preview + messagesDiv.innerHTML;
-        }
-
-        // Utility functions
-        function isValidAddress(address) {
-            return address.startsWith('0x') && address.length >= 64;
-        }
-
-        function truncateAddress(address) {
-            return `${address.slice(0, 6)}...${address.slice(-4)}`;
-        }
-
-        function showLoading(show) {
-            document.getElementById('loadingSection').style.display = show ? 'block' : 'none';
-        }
-
-        function showMessage(message, type = 'info') {
-            const messagesDiv = document.getElementById('messages');
+        function showMessage(message, type) {
+            const messagesContainer = document.getElementById('statusMessages');
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
+            messageDiv.className = `status-message ${type}`;
             messageDiv.textContent = message;
             
-            messagesDiv.insertBefore(messageDiv, messagesDiv.firstChild);
+            messagesContainer.appendChild(messageDiv);
             
             setTimeout(() => {
-                messageDiv.remove();
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
             }, 5000);
         }
-
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeClient();
-            
-            document.getElementById('connectBtn').addEventListener('click', connectWallet);
-            document.getElementById('initializeBtn').addEventListener('click', initializeSystem);
-            document.getElementById('checkInitStatus').addEventListener('click', () => {
-                showMessage(isInitialized ? '✅ System is initialized' : '⚠️ System not initialized', 
-                           isInitialized ? 'success' : 'error');
-            });
-            document.getElementById('refreshStats').addEventListener('click', refreshAllData);
-            document.getElementById('refreshDonations').addEventListener('click', checkDonations);
-            document.getElementById('updateSupplier').addEventListener('click', updateSupplier);
-            document.getElementById('spendForResources').addEventListener('click', spendForResources);
-            document.getElementById('previewSpending').addEventListener('click', previewSpending);
-            document.getElementById('viewAllDonors').addEventListener('click', showAllDonors);
-            document.getElementById('exportDonations').addEventListener('click', exportDonationsReport);
-            document.getElementById('donationFilter').addEventListener('change', filterDonations);
-        });
-
-        // Auto-refresh every 30 seconds
-        setInterval(async () => {
-            if (account && client && isInitialized) {
-                await refreshAllData();
+        window.addEventListener('load', () => {
+            if (!isPetraAvailable()) {
+                showMessage('Petra Wallet not detected. Please install the Petra Wallet extension.', 'error');
             }
-        }, 30000);
-
-        // Make closeDonorModal globally accessible
-        window.closeDonorModal = closeDonorModal;
+        });
+        if (isPetraAvailable()) {
+            window.aptos.onAccountChange(() => {
+                location.reload();
+            });
+            
+            window.aptos.onNetworkChange(() => {
+                location.reload();
+            });
+        }
     </script>
 </body>
 </html>
